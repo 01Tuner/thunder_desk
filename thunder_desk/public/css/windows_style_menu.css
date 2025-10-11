@@ -1,0 +1,424 @@
+/* Modern Clean UI/UX Menu Design */
+
+#windows-style-menu {
+	background: #f0f0f0;
+	border-bottom: 1px solid #c0c0c0;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	position: sticky;
+	top: 60px;
+	z-index: 1000;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	min-height: 35px;
+}
+
+/* Context-specific menu styling */
+#windows-style-menu.tab-app {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10000;
+	background: #f0f0f0;
+	border-bottom: 1px solid #c0c0c0;
+}
+
+#windows-style-menu.desktop-app {
+	position: sticky;
+	top: 0;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.windows-menu-bar {
+	display: flex;
+	align-items: center;
+	padding: 0;
+	margin: 0;
+	min-height: 35px;
+	gap: 0;
+}
+
+.windows-menu-item {
+	position: relative;
+	display: inline-block;
+}
+
+.windows-menu-button {
+	background: transparent;
+	border: none;
+	padding: 8px 12px;
+	color: #374151;
+	font-size: 13px;
+	font-weight: 400;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	border-radius: 0;
+	min-height: 32px;
+	outline: none;
+	position: relative;
+	letter-spacing: 0.1px;
+	text-decoration: none;
+	border: 1px solid transparent;
+}
+
+.windows-menu-button:hover {
+	background: #e1e1e1;
+	color: #333;
+	text-decoration: none;
+	border-color: #ccc;
+}
+
+.windows-menu-button:focus,
+.windows-menu-button.show {
+	background: #cce8ff;
+	color: #333;
+	text-decoration: none;
+	border-color: #005499;
+	outline: 1px solid #005499;
+}
+
+.windows-menu-button:active {
+	background: #b3d9ff;
+	transition: background 0.1s ease;
+}
+
+.windows-menu-button i {
+	font-size: 13px;
+	width: 16px;
+	text-align: center;
+	opacity: 0.8;
+}
+
+.windows-menu-button span {
+	font-size: 13px;
+	font-weight: 400;
+	white-space: nowrap;
+	letter-spacing: 0.1px;
+}
+
+/* Windows-style dropdown menu styling */
+.windows-dropdown-menu {
+	background: #ffffff;
+	border: 1px solid #999;
+	border-radius: 0;
+	box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+	padding: 2px 0;
+	margin: 0;
+	margin-top: -1px;
+	min-width: 200px;
+	font-size: 13px;
+	max-height: 400px;
+	overflow-y: auto;
+	position: absolute;
+	display: none;
+	z-index: 10001;
+	left: 0;
+	top: 100%;
+}
+
+.windows-dropdown-menu.show {
+	display: block;
+	animation: windowsDropdownFadeIn 0.1s ease-out;
+}
+
+.windows-dropdown-menu .dropdown-item {
+	padding: 6px 20px 6px 40px;
+	color: #333;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	position: relative;
+	border: none;
+	border-radius: 0;
+	font-size: 13px;
+	line-height: 1.4;
+	transition: all 0.1s ease;
+	margin: 0;
+}
+
+.windows-dropdown-menu .dropdown-item i {
+	position: absolute;
+	left: 20px;
+	width: 14px;
+	text-align: center;
+	font-size: 12px;
+	color: #666;
+}
+
+.windows-dropdown-menu .dropdown-item:hover {
+	background: #316ac5;
+	color: white;
+	text-decoration: none;
+}
+
+.windows-dropdown-menu .dropdown-item:hover i {
+	color: white;
+}
+
+.windows-dropdown-menu .dropdown-item:focus {
+	background: #316ac5;
+	color: white;
+	outline: none;
+}
+
+.windows-dropdown-menu .dropdown-item:active {
+	background: #1e4f8a;
+	color: white;
+}
+
+/* Clicked state for feedback */
+.windows-submenu-item.clicked {
+	background: #1e4f8a !important;
+	color: white !important;
+}
+
+.windows-submenu-item.clicked i {
+	color: white !important;
+}
+
+/* Windows-style dropdown animation */
+@keyframes windowsDropdownFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Global hiding with smooth transitions */
+/* .navbar-brand,
+.navbar-home,
+.app-logo,
+#navbar-breadcrumbs {
+    display: none !important;
+} */
+
+.navbar .nav-item:not(.dropdown-navbar-user):not(.windows-menu-item) {
+	display: none !important;
+}
+
+/* Context-specific body classes */
+body.thunder-desk-tab-app {
+	overflow-x: hidden;
+}
+
+body.thunder-desk-tab-app .navbar {
+	display: none !important;
+}
+
+body.thunder-desk-desktop-app .container-fluid.desktop-app-mode {
+	padding-top: 0;
+}
+
+/* Windows-style scrollbar for dropdown menus */
+.windows-dropdown-menu::-webkit-scrollbar {
+	width: 16px;
+}
+
+.windows-dropdown-menu::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+.windows-dropdown-menu::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border: 1px solid #999;
+}
+
+.windows-dropdown-menu::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
+
+@media (max-width: 480px) {
+	.windows-menu-bar {
+		padding: 0 5px;
+	}
+
+	.windows-menu-button {
+		padding: 4px 6px;
+		min-height: 26px;
+	}
+
+	.windows-menu-button span {
+		display: none;
+	}
+
+	.windows-menu-button i {
+		font-size: 14px;
+	}
+
+	.windows-dropdown-menu {
+		min-width: 140px;
+		left: 0 !important;
+	}
+
+	.windows-dropdown-menu .dropdown-item {
+		padding: 4px 14px 4px 28px;
+		font-size: 11px;
+	}
+
+	.windows-dropdown-menu .dropdown-item i {
+		left: 14px;
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 768px) {
+	.windows-menu-bar {
+		overflow-x: auto;
+		overflow-y: hidden;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+
+	.windows-menu-bar::-webkit-scrollbar {
+		display: none;
+	}
+
+	.windows-menu-item {
+		flex-shrink: 0;
+	}
+
+	.windows-dropdown-menu {
+		min-width: 160px;
+	}
+}
+
+@media (max-width: 480px) {
+	.windows-menu-bar {
+		padding: 4px 8px;
+		gap: 1px;
+	}
+
+	.windows-menu-button {
+		padding: 6px 8px;
+		min-height: 30px;
+		border-radius: 4px;
+	}
+
+	.windows-menu-button span {
+		display: none;
+	}
+
+	.windows-menu-button i {
+		font-size: 16px;
+		width: 16px;
+	}
+}
+
+/* Clean focus indicators for accessibility */
+.windows-menu-button:focus-visible {
+	box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+	outline: none;
+}
+
+/* Dark mode support */
+/* html[data-theme="dark"] {
+	#windows-style-menu {
+		background: #2d2d2d;
+		border-bottom-color: #555;
+	}
+
+	.windows-menu-button {
+		color: #e0e0e0;
+	}
+
+	.windows-menu-button:hover {
+		background: #3d3d3d;
+		color: #fff;
+	}
+
+	.windows-menu-button:focus,
+	.windows-menu-button.show {
+		background: #0078d4;
+		color: #fff;
+	}
+
+	.windows-dropdown-menu {
+		background: #333;
+		border-color: #555;
+	}
+
+	.windows-dropdown-menu .dropdown-item {
+		color: #e0e0e0;
+	}
+
+	.windows-dropdown-menu .dropdown-item:hover {
+		background: #0078d4;
+		color: #fff;
+	}
+} */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.windows-menu-button {
+		border: 1px solid #000;
+	}
+
+	.windows-menu-button:hover,
+	.windows-menu-button:focus {
+		border-color: #000;
+		background: #fff;
+		color: #000;
+	}
+
+	.windows-dropdown-menu {
+		border: 2px solid #000;
+	}
+
+	.windows-dropdown-menu .dropdown-item:hover {
+		background: #000;
+		color: #fff;
+	}
+}
+
+/* Enhanced reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.windows-menu-button,
+	#windows-style-menu {
+		transition: none;
+		animation: none;
+		transform: none;
+	}
+
+	.windows-menu-loading .windows-menu-button {
+		animation: none;
+		opacity: 0.6;
+	}
+}
+
+/* Print styles */
+@media print {
+	#windows-style-menu {
+		display: none !important;
+	}
+}
+
+/* Loading state */
+.windows-menu-loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.windows-menu-loading .windows-menu-button {
+	animation: cleanPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes cleanPulse {
+	0%,
+	100% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 0.3;
+	}
+}
+
+header.navbar {
+	z-index: 1001;
+}

@@ -3,7 +3,7 @@ app_title = "Thunder Desk"
 app_publisher = "rafeeq"
 app_description = "Desktop app extending erpnext"
 app_email = "muhammedrafeeq93@gmail.com"
-app_license = "mit"
+app_license = "Copyright rafeeq"
 
 # Apps
 # ------------------
@@ -24,16 +24,10 @@ app_license = "mit"
 # Includes in <head>
 # ------------------
 
-# include js, css files in header of desk.html
-# app_include_css = "/assets/thunder_desk/css/thunder_desk.css"
-# app_include_js = "/assets/thunder_desk/js/thunder_desk.js"
-
-# include js, css files in header of web template
-# web_include_css = "/assets/thunder_desk/css/thunder_desk.css"
-# web_include_js = "/assets/thunder_desk/js/thunder_desk.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "thunder_desk/public/scss/website"
+
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -57,7 +51,7 @@ app_license = "mit"
 # ----------
 
 # application home page (will override Website Settings)
-# home_page = "login"
+# home_page = "login"  # Handled dynamically in before_request
 
 # website user home page (by Role)
 # role_home_page = {
@@ -242,3 +236,23 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Global includes to replace ERPNext headers with modern dropdown menu
+app_include_js = [
+    "/assets/thunder_desk/js/windows_style_menu.js"
+]
+
+app_include_css = [
+    "/assets/thunder_desk/css/windows_style_menu.css", 
+    "/assets/thunder_desk/css/global_no_sidebar.css"
+]
+
+# Apply module header to specific doctypes plus existing customizations
+doctype_js = {
+    'POS Invoice': 'public/js/pos_invoice.js',
+    'POS Closing Entry': 'public/js/pos_closing_entry.js',
+}
+
+# Override the main document refresh to include module header menu
+override_whitelisted_methods = {
+    "frappe.model.document.get_doc": "thunder_desk.overrides.document.get_doc_with_dashboard_menu"
+}

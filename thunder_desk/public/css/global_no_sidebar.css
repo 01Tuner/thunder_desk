@@ -1,0 +1,122 @@
+/* Global CSS to disable left sidebar across all pages */
+
+/* Hide all sidebar elements */
+.sidebar-column,
+.page-sidebar,
+.web-sidebar,
+.sidebar,
+.layout-side-section,
+.desk-sidebar,
+.sidebar-item-container,
+.sidebar-section,
+.standard-sidebar {
+    display: none !important;
+}
+
+/* Ensure main content uses full width */
+.main-column,
+.layout-main-section,
+.layout-main,
+.page-wrapper .container,
+.desk-container .container,
+.layout-main-section-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* Override Bootstrap grid for full width */
+.col-md-10,
+.col-lg-10,
+.col-sm-10 {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Remove sidebar spacing */
+.layout-main-section {
+    margin-left: 0 !important;
+    padding-left: 15px !important;
+}
+
+/* Ensure page content spans full width */
+.page-content,
+.page-container,
+.container-fluid {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Hide any sidebar toggle buttons */
+.sidebar-toggle,
+.toggle-sidebar,
+.sidebar-toggle-btn {
+    display: none !important;
+}
+
+/* Frappe Desk specific overrides */
+.layout-wrapper .layout-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.layout-wrapper .layout-side-section {
+    display: none !important;
+}
+
+/* ERPNext specific sidebar classes */
+.web-sidebar-column,
+.website-sidebar {
+    display: none !important;
+}
+
+/* Form view adjustments */
+.form-layout .layout-main-section {
+    width: 100% !important;
+}
+
+/* List view adjustments */
+.list-page .layout-main-section {
+    width: 100% !important;
+}
+
+/* Report view adjustments */
+.report-wrapper .layout-main-section {
+    width: 100% !important;
+}
+
+/* Ensure responsive behavior still works */
+@media (max-width: 768px) {
+    .layout-main-section,
+    .main-column {
+        width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+/* Web template overrides */
+.web-content .sidebar,
+.web-content .sidebar-column {
+    display: none !important;
+}
+
+.web-content .main-column {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Additional overrides for any custom sidebar implementations */
+[class*="sidebar"],
+[id*="sidebar"] {
+    display: none !important;
+}
+
+/* Make sure content doesn't have left margin expecting sidebar */
+.layout-main,
+.page-content-wrapper,
+.page-wrapper {
+    margin-left: 0 !important;
+}
+

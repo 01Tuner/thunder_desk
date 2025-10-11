@@ -1,0 +1,312 @@
+/* Thunder Desk Dashboard Styles */
+.thunder-dashboard {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styles */
+.dashboard-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-title {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.dashboard-title i {
+    margin-right: 12px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.welcome-text {
+    color: white;
+    font-size: 1rem;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* Main Content */
+.dashboard-content {
+    padding: 25px 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Modules Grid */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.module-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.module-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.module-header {
+    padding: 15px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.module-icon {
+    font-size: 1.5rem;
+}
+
+.module-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.module-items {
+    padding: 0;
+}
+
+.module-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #2c3e50;
+    border-bottom: 1px solid #ecf0f1;
+    transition: all 0.2s ease;
+}
+
+.module-item:last-child {
+    border-bottom: none;
+}
+
+.module-item:hover {
+    background: #f8f9fa;
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.module-item i:first-child {
+    width: 20px;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+.module-item span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.item-arrow {
+    color: #bdc3c7;
+    font-size: 0.8rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin: 25px 0;
+    padding: 20px;
+}
+
+.quick-actions h3 {
+    color: white;
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: #2c3e50;
+}
+
+.action-btn i {
+    font-size: 1.5rem;
+}
+
+.action-btn span {
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Action Button Colors */
+.pos-btn i { color: #e74c3c; }
+.invoice-btn i { color: #3498db; }
+.customer-btn i { color: #2ecc71; }
+.item-btn i { color: #f39c12; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .dashboard-title {
+        font-size: 1.3rem;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .module-item {
+        padding: 10px 12px;
+    }
+
+    .dashboard-content {
+        padding: 18px 0;
+    }
+
+    .modules-grid {
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+}
+
+/* Enhanced Animations and Microinteractions */
+.module-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.module-card:nth-child(1) { animation-delay: 0.1s; }
+.module-card:nth-child(2) { animation-delay: 0.2s; }
+.module-card:nth-child(3) { animation-delay: 0.3s; }
+.module-card:nth-child(4) { animation-delay: 0.4s; }
+.module-card:nth-child(5) { animation-delay: 0.5s; }
+.module-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.action-btn {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.action-btn:nth-child(1) { animation-delay: 0.7s; }
+.action-btn:nth-child(2) { animation-delay: 0.8s; }
+.action-btn:nth-child(3) { animation-delay: 0.9s; }
+.action-btn:nth-child(4) { animation-delay: 1.0s; }
+
+/* Loading state for module items */
+.module-item .item-arrow {
+    transition: transform 0.2s ease;
+}
+
+.module-item:hover .item-arrow {
+    transform: translateX(2px);
+}
+
+/* Enhanced focus states for accessibility */
+.module-item:focus,
+.action-btn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+}
+
+/* Full width container for thunder dashboard */
+.thunder-dashboard {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.web-footer {
+    display: none;
+}

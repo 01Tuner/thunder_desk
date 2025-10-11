@@ -1,0 +1,49 @@
+{% extends "templates/base.html" %}
+
+{% block head_include %}
+    {{ super() }}
+    <!-- Module Header Menu Integration -->
+    <link rel="stylesheet" href="/assets/thunder_desk/css/global_no_sidebar.css">
+    <script>
+        window.module_header_enabled = true;
+        window.thunder_desk_config = {
+            enable_module_header: true,
+            hide_traditional_header: false,
+            refresh_on_document_change: true
+        };
+    </script>
+{% endblock %}
+
+{% block content %}
+<!-- Simplified header for Thunder Desk with dashboard menu integration -->
+<header class="navbar navbar-expand-lg navbar-light bg-light" role="banner" id="thunder-desk-header">
+    <div class="container">
+        <a class="navbar-brand" href="/app" style="display: none;">
+            <img src="/assets/custom_erpnext/images/custom-logo.png" alt="Thunder Desk" style="height: 40px;">
+        </a>
+        <div class="ml-auto">
+            <span class="user-info">{{ frappe.session.user }}</span>
+        </div>
+    </div>
+</header>
+
+<!-- Module Header Menu Container will be inserted here by JavaScript -->
+<div id="module-header-placeholder"></div>
+
+{{ super() }}
+
+<script>
+    // Initialize module header menu integration
+    $(document).ready(function() {
+        // Flag that module header should replace traditional navigation
+        window.thunder_desk_module_header_enabled = true;
+
+        // Hide traditional ERPNext header elements
+        setTimeout(function() {
+            // $('.navbar-brand').hide();
+            // $('#navbar-breadcrumbs').hide();
+            $('body').addClass('module-header-active');
+        }, 100);
+    });
+</script>
+{% endblock %}
