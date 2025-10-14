@@ -247,10 +247,10 @@ app_include_css = [
 ]
 
 # Apply module header to specific doctypes plus existing customizations
-doctype_js = {
-    'POS Invoice': 'public/js/pos_invoice.js',
-    'POS Closing Entry': 'public/js/pos_closing_entry.js',
-}
+# doctype_js = {
+#     'POS Invoice': 'public/js/pos_invoice.js',
+#     'POS Closing Entry': 'public/js/pos_closing_entry.js',
+# }
 
 # Override the main document refresh to include module header menu
 override_whitelisted_methods = {
