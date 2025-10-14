@@ -163,7 +163,8 @@ function getMenuItemHTML(menu, isTabApp, isDesktopApp) {
 }
 
 function getERPNextMenuStructure() {
-    return [
+    // Define all modules with their details
+    const allModules = [
         {
             "name": "Customer",
             "title": __("Customer Management"),
@@ -187,7 +188,7 @@ function getERPNextMenuStructure() {
                 {"label": __("Sales Order"), "doctype": "Sales Order", "icon": "fa fa-file-text-o"},
                 {"label": __("Sales Invoice"), "doctype": "Sales Invoice", "icon": "fa fa-file"},
                 {"label": __("POS Invoice"), "doctype": "POS Invoice", "icon": "fa fa-credit-card"},
-                {"label": __("Point of Sale"), "route": "/app/point-of-sale", "icon": "fa fa-th"}
+                {"label": __("Point of Sale"), "route": "/app/point-of-sale", "required_doctype": "POS Invoice", "icon": "fa fa-th"}
             ]
         },
         {
@@ -222,11 +223,11 @@ function getERPNextMenuStructure() {
             "icon": "fa fa-bar-chart",
             "color": "#9b59b6",
             "submenus": [
-                {"label": __("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "icon": "fa fa-line-chart"},
-                {"label": __("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "icon": "fa fa-line-chart"},
-                {"label": __("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "icon": "fa fa-cubes"},
-                {"label": __("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "icon": "fa fa-money"},
-                {"label": __("General Ledger"), "route": "/app/query-report/General%20Ledger", "icon": "fa fa-book"}
+                {"label": __("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "report_name": "Sales Analytics", "icon": "fa fa-line-chart"},
+                {"label": __("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
+                {"label": __("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
+                {"label": __("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
+                {"label": __("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"}
             ]
         },
         {
@@ -243,6 +244,51 @@ function getERPNextMenuStructure() {
             ]
         }
     ];
+
+    // Filter modules and submenus based on user permissions
+    const filteredModules = [];
+    for (const module of allModules) {
+        // Filter submenus based on permissions
+        const filteredSubmenus = [];
+        for (const submenu of module.submenus) {
+            // Handle permission checking based on item type
+            can_access = false;
+
+            if (submenu.report_name) {
+                // Check report permission
+                try {
+                    can_access = frappe.has_permission("Report", submenu.report_name, "read");
+                } catch (e) {
+                    // Skip reports that don't exist or have permission issues
+                    console.warn(`Report permission check failed for: ${submenu.report_name}`, e);
+                }
+            } else {
+                // Check doctype permission (could be 'doctype' or 'required_doctype')
+                const doctype_to_check = submenu.doctype || submenu.required_doctype;
+                if (doctype_to_check) {
+                    try {
+                        can_access = frappe.model.can_read(doctype_to_check);
+                    } catch (e) {
+                        // Skip doctypes that don't exist or have permission issues
+                        console.warn(`Permission check failed for doctype: ${doctype_to_check}`, e);
+                    }
+                }
+            }
+
+            if (can_access) {
+                filteredSubmenus.push(submenu);
+            }
+        }
+
+        // Only include modules that have at least one accessible submenu
+        if (filteredSubmenus.length > 0) {
+            const moduleCopy = {...module};
+            moduleCopy.submenus = filteredSubmenus;
+            filteredModules.push(moduleCopy);
+        }
+    }
+
+    return filteredModules;
 }
 
 function setupWindowsMenuHandlers() {

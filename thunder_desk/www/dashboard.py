@@ -16,7 +16,7 @@ def get_context(context):
     user = frappe.get_doc("User", frappe.session.user)
 
     # Define modules with their details
-    modules = [
+    all_modules = [
         {
             "name": "Customer",
             "title": _("Customer Management"),
@@ -40,7 +40,7 @@ def get_context(context):
                 {"label": _("Sales Order"), "doctype": "Sales Order", "icon": "fa fa-file-text-o"},
                 {"label": _("Sales Invoice"), "doctype": "Sales Invoice", "icon": "fa fa-file"},
                 {"label": _("POS Invoice"), "doctype": "POS Invoice", "icon": "fa fa-credit-card"},
-                {"label": _("Point of Sale"), "route": "/app/point-of-sale", "icon": "fa fa-th"},
+                {"label": _("Point of Sale"), "route": "/app/point-of-sale", "required_doctype": "POS Invoice", "icon": "fa fa-th"},
             ]
         },
         {
@@ -75,11 +75,11 @@ def get_context(context):
             "icon": "fa fa-bar-chart",
             "color": "#9b59b6",
             "items": [
-                {"label": _("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "icon": "fa fa-line-chart"},
-                {"label": _("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "icon": "fa fa-line-chart"},
-                {"label": _("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "icon": "fa fa-cubes"},
-                {"label": _("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "icon": "fa fa-money"},
-                {"label": _("General Ledger"), "route": "/app/query-report/General%20Ledger", "icon": "fa fa-book"},
+                {"label": _("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "report_name": "Sales Analytics", "icon": "fa fa-line-chart"},
+                {"label": _("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
+                {"label": _("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
+                {"label": _("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
+                {"label": _("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"},
             ]
         },
         {
@@ -96,6 +96,41 @@ def get_context(context):
             ]
         }
     ]
+
+    # Filter modules and items based on user permissions
+    modules = []
+    for module in all_modules:
+        # Filter items based on permissions
+        filtered_items = []
+        for item in module["items"]:
+            # Handle permission checking based on item type
+            can_access = False
+
+            if item.get("report_name"):
+                # Check report permission
+                try:
+                    can_access = frappe.has_permission("Report", item["report_name"], "read")
+                except Exception:
+                    # Skip reports that don't exist or have permission issues
+                    pass
+            else:
+                # Check doctype permission (could be 'doctype' or 'required_doctype')
+                doctype_to_check = item.get("doctype") or item.get("required_doctype")
+                if doctype_to_check:
+                    try:
+                        can_access = frappe.has_permission(doctype_to_check, "read")
+                    except Exception:
+                        # Skip doctypes that don't exist or have permission issues
+                        pass
+
+            if can_access:
+                filtered_items.append(item)
+
+        # Only include modules that have at least one accessible item
+        if filtered_items:
+            module_copy = module.copy()
+            module_copy["items"] = filtered_items
+            modules.append(module_copy)
 
     # Set page context
     context.update({
