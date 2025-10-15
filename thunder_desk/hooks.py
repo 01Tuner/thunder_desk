@@ -131,13 +131,13 @@ app_license = "Copyright rafeeq"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Company": {
+		"on_update": "thunder_desk.table_logger.log_company_update",
+		"after_insert": "thunder_desk.table_logger.log_company_insert",
+		# "on_trash": "thunder_desk.table_logger.log_company_delete"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -242,7 +242,7 @@ app_include_js = [
 ]
 
 app_include_css = [
-    "/assets/thunder_desk/css/windows_style_menu.css", 
+    "/assets/thunder_desk/css/windows_style_menu.css",
     "/assets/thunder_desk/css/global_no_sidebar.css"
 ]
 
