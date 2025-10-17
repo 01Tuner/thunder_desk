@@ -246,13 +246,7 @@ app_include_css = [
     "/assets/thunder_desk/css/global_no_sidebar.css"
 ]
 
-# Apply module header to specific doctypes plus existing customizations
-# doctype_js = {
-#     'POS Invoice': 'public/js/pos_invoice.js',
-#     'POS Closing Entry': 'public/js/pos_closing_entry.js',
-# }
-
 # Override the main document refresh to include module header menu
-override_whitelisted_methods = {
-    "frappe.model.document.get_doc": "thunder_desk.overrides.document.get_doc_with_dashboard_menu"
-}
+# override_whitelisted_methods = {
+#     "frappe.model.document.get_doc": "thunder_desk.overrides.document.get_doc_with_dashboard_menu"
+# }

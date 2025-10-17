@@ -8,8 +8,13 @@ def get_context(context):
     if frappe.session.user == "Guest":
         # Check if request is from Tauri app
         user_agent = frappe.request.headers.get('User-Agent', '')
-        
+
         frappe.local.flags.redirect_location = "/login"
+        raise frappe.Redirect
+
+    # Check if ERPNext setup is completed
+    if not frappe.is_setup_complete():
+        frappe.local.flags.redirect_location = "/app/home"
         raise frappe.Redirect
 
     # Get user info

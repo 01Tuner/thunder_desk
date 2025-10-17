@@ -306,7 +306,6 @@
 .thunder-dashboard {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 100vh;
 }
 .web-footer {
     display: none;

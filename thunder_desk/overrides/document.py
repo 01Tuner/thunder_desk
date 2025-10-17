@@ -8,6 +8,14 @@ def get_doc_with_dashboard_menu(doctype, name=None, **kwargs):
     Override get_doc to include dashboard menu context
     This replaces the traditional ERPNext header with dashboard menus
     """
+    # Skip dashboard menu for backup and system pages
+    if doctype in ['File', 'Backup'] or (name and 'backup' in name.lower()):
+        # Return original document without dashboard menu modifications
+        if name:
+            return frappe.get_doc(doctype, name)
+        else:
+            return frappe.new_doc(doctype)
+
     # Get the original document
     if name:
         doc = frappe.get_doc(doctype, name)

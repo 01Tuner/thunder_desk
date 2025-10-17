@@ -204,9 +204,9 @@
 }
 
 /* Context-specific body classes */
-body.thunder-desk-tab-app {
+/* body.thunder-desk-tab-app {
 	overflow-x: hidden;
-}
+} */
 
 body.thunder-desk-tab-app .navbar {
 	display: none !important;
@@ -312,47 +312,45 @@ body.thunder-desk-desktop-app .container-fluid.desktop-app-mode {
 }
 
 /* Clean focus indicators for accessibility */
-.windows-menu-button:focus-visible {
+html[data-theme="dark"] .windows-menu-button:focus-visible {
 	box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
 	outline: none;
 }
 
 /* Dark mode support */
-/* html[data-theme="dark"] {
-	#windows-style-menu {
-		background: #2d2d2d;
-		border-bottom-color: #555;
-	}
+html[data-theme="dark"] #windows-style-menu {
+	background: #2d2d2d;
+	border-bottom-color: #555;
+}
 
-	.windows-menu-button {
-		color: #e0e0e0;
-	}
+html[data-theme="dark"] .windows-menu-button {
+	color: #e0e0e0;
+}
 
-	.windows-menu-button:hover {
-		background: #3d3d3d;
-		color: #fff;
-	}
+html[data-theme="dark"] .windows-menu-button:hover {
+	background: #3d3d3d;
+	color: #fff;
+}
 
-	.windows-menu-button:focus,
-	.windows-menu-button.show {
-		background: #0078d4;
-		color: #fff;
-	}
+html[data-theme="dark"] .windows-menu-button:focus,
+html[data-theme="dark"] .windows-menu-button.show {
+	background: #0078d4;
+	color: #fff;
+}
 
-	.windows-dropdown-menu {
-		background: #333;
-		border-color: #555;
-	}
+html[data-theme="dark"] .windows-dropdown-menu {
+	background: #333;
+	border-color: #555;
+}
 
-	.windows-dropdown-menu .dropdown-item {
-		color: #e0e0e0;
-	}
+html[data-theme="dark"] .windows-dropdown-menu .dropdown-item {
+	color: #e0e0e0;
+}
 
-	.windows-dropdown-menu .dropdown-item:hover {
-		background: #0078d4;
-		color: #fff;
-	}
-} */
+html[data-theme="dark"] .windows-dropdown-menu .dropdown-item:hover {
+	background: #0078d4;
+	color: #fff;
+}
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
