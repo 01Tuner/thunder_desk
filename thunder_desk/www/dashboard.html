@@ -17,7 +17,7 @@
 				</h1>
 				<div class="user-info">
 					<span class="welcome-text">{{ _("Welcome,") }} {{ user_name }}</span>
-					<a href="/app/logout" class="logout-btn">
+					<a href="#" class="logout-btn" onclick="handleLogout(event)">
 						<i class="fa fa-sign-out"></i>
 						{{ _("Logout") }}
 					</a>
@@ -83,6 +83,37 @@
 </div>
 
 <script>
+	// Handle logout functionality
+	function handleLogout(event) {
+		event.preventDefault();
+
+		// Show loading state on logout button
+		const logoutBtn = event.target.closest(".logout-btn");
+		const logoutIcon = logoutBtn.querySelector("i");
+		const logoutText = logoutBtn.querySelector("span") || logoutBtn;
+
+		logoutIcon.className = "fa fa-spinner fa-spin";
+		if (logoutText.textContent) {
+			logoutText.textContent = '{{ _("Logging out...") }}';
+		}
+
+		frappe.call({
+			method: "logout", // Maps to /api/method/logout
+			callback: function (response) {
+				if (response.message) {
+					frappe.msgprint("Logout successful!");
+					// Optionally redirect to login page
+					window.location.href = "/login";
+				} else {
+					frappe.msgprint("Logout failed!");
+				}
+			},
+			error: function (err) {
+				frappe.msgprint("Error during logout: " + err.message);
+			},
+		});
+	}
+
 	document.addEventListener("DOMContentLoaded", function () {
 		// Add hover effects and animations
 		const moduleCards = document.querySelectorAll(".module-card");
