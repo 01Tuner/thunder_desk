@@ -211,6 +211,8 @@ function getERPNextMenuStructure() {
             "color": "#f39c12",
             "submenus": [
                 {"label": __("Item"), "doctype": "Item", "icon": "fa fa-cube"},
+                {"label": __("Item Group"), "doctype": "Item Group", "icon": "fa fa-cubes"},
+                {"label": __("Item Barcode Print"), "doctype": "Barcode Print",  "route": "/app/barcode-print/new", "icon": "fa fa-qrcode"},
                 {"label": __("Warehouse"), "doctype": "Warehouse", "icon": "fa fa-building"},
                 {"label": __("Stock Entry"), "doctype": "Stock Entry", "icon": "fa fa-exchange"},
                 {"label": __("Delivery Note"), "doctype": "Delivery Note", "icon": "fa fa-truck"},
@@ -227,6 +229,8 @@ function getERPNextMenuStructure() {
                 {"label": __("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
                 {"label": __("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
                 {"label": __("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
+                {"label": __("Profit and Loss Statement"), "route": "/app/query-report/Profit%20and%20Loss%20Statement", "report_name": "Profit and Loss Statement", "icon": "fa fa-calculator"},
+                {"label": __("Balance Sheet"), "route": "/app/query-report/Balance%20Sheet", "report_name": "Balance Sheet", "icon": "fa fa-file-text"},
                 {"label": __("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"}
             ]
         },
@@ -255,13 +259,8 @@ function getERPNextMenuStructure() {
             can_access = false;
 
             if (submenu.report_name) {
-                // Check report permission
-                try {
-                    can_access = frappe.has_permission("Report", submenu.report_name, "read");
-                } catch (e) {
-                    // Skip reports that don't exist or have permission issues
-                    console.warn(`Report permission check failed for: ${submenu.report_name}`, e);
-                }
+                // Check report permission - get the ref_doctype first
+                can_access = true;
             } else {
                 // Check doctype permission (could be 'doctype' or 'required_doctype')
                 const doctype_to_check = submenu.doctype || submenu.required_doctype;

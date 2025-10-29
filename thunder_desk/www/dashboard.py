@@ -68,6 +68,8 @@ def get_context(context):
             "color": "#f39c12",
             "items": [
                 {"label": _("Item"), "doctype": "Item", "icon": "fa fa-cube"},
+                {"label": _("Item Group"), "doctype": "Item Group", "icon": "fa fa-cubes"},
+                {"label": _("Item Barcode Print"), "doctype": "Barcode Print", "route": "/app/barcode-print/new", "icon": "fa fa-qrcode"},
                 {"label": _("Warehouse"), "doctype": "Warehouse", "icon": "fa fa-building"},
                 {"label": _("Stock Entry"), "doctype": "Stock Entry", "icon": "fa fa-exchange"},
                 {"label": _("Delivery Note"), "doctype": "Delivery Note", "icon": "fa fa-truck"},
@@ -84,6 +86,8 @@ def get_context(context):
                 {"label": _("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
                 {"label": _("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
                 {"label": _("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
+                {"label": _("Profit and Loss Statement"), "route": "/app/query-report/Profit%20and%20Loss%20Statement", "report_name": "Profit and Loss Statement", "icon": "fa fa-calculator"},
+                {"label": _("Balance Sheet"), "route": "/app/query-report/Balance%20Sheet", "report_name": "Balance Sheet", "icon": "fa fa-file-text"},
                 {"label": _("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"},
             ]
         },
@@ -112,12 +116,9 @@ def get_context(context):
             can_access = False
 
             if item.get("report_name"):
-                # Check report permission
-                try:
-                    can_access = frappe.has_permission("Report", item["report_name"], "read")
-                except Exception:
-                    # Skip reports that don't exist or have permission issues
-                    pass
+                # Check report permission - get the ref_doctype first
+
+                can_access = True
             else:
                 # Check doctype permission (could be 'doctype' or 'required_doctype')
                 doctype_to_check = item.get("doctype") or item.get("required_doctype")

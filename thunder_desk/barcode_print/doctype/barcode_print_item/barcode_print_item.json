@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "creation": "2025-01-28 14:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "barcode",
+  "barcode_type",
+  "uom",
+  "quantity",
+  "price"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "options": "Item",
+   "in_list_view": 1,
+   "label": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "barcode",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Barcode",
+   "reqd": 1
+  },
+  {
+   "fieldname": "barcode_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Barcode Type",
+   "options": "\nEAN\nUPC-A\nCODE-39\nEAN-12\nEAN-8\nGS1\nGTIN\nISBN\nISBN-10\nISBN-13\nISSN\nJAN\nPZN\nUPC"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM"
+  },
+  {
+   "default": "1",
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "label": "Price",
+   "in_list_view": 1,
+   "options": "Company:company:default_currency"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-01-28 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Barcode Print",
+ "name": "Barcode Print Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

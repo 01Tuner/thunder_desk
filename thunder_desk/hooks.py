@@ -67,11 +67,12 @@ app_license = "Copyright rafeeq"
 # Jinja
 # ----------
 
-# add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "thunder_desk.utils.jinja_methods",
-# 	"filters": "thunder_desk.utils.jinja_filters"
-# }
+# add methods to jinja environment
+jinja = {
+    "methods": [
+        "thunder_desk.utils.barcode.get_barcode_svg"
+    ]
+}
 
 # Installation
 # ------------
@@ -245,6 +246,10 @@ app_include_css = [
     "/assets/thunder_desk/css/windows_style_menu.css",
     "/assets/thunder_desk/css/global_no_sidebar.css"
 ]
+
+# Fixtures
+# --------
+# No fixtures needed for Barcode Print since it is a standard Print Format file
 
 # Override the main document refresh to include module header menu
 # override_whitelisted_methods = {
