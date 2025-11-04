@@ -6,12 +6,11 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
-  "item_name",
   "barcode",
   "barcode_type",
-  "uom",
   "quantity",
-  "price"
+  "price",
+  "buying_price"
  ],
  "fields": [
   {
@@ -21,12 +20,6 @@
    "in_list_view": 1,
    "label": "Item",
    "reqd": 1
-  },
-  {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Name"
   },
   {
    "fieldname": "barcode",
@@ -40,25 +33,26 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Barcode Type",
-   "options": "\nEAN\nUPC-A\nCODE-39\nEAN-12\nEAN-8\nGS1\nGTIN\nISBN\nISBN-10\nISBN-13\nISSN\nJAN\nPZN\nUPC"
-  },
-  {
-   "fieldname": "uom",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "UOM",
-   "options": "UOM"
+   "options": "\nCODE128\nEAN\nUPC-A\nCODE-39\nEAN-12\nEAN-8\nGS1\nGTIN\nISBN\nISBN-10\nISBN-13\nISSN\nJAN\nPZN\nUPC"
   },
   {
    "default": "1",
    "fieldname": "quantity",
    "fieldtype": "Int",
-   "label": "Quantity"
+   "label": "Quantity",
+   "in_list_view": 1
   },
   {
    "fieldname": "price",
    "fieldtype": "Currency",
    "label": "Price",
+   "in_list_view": 1,
+   "options": "Company:company:default_currency"
+  },
+  {
+   "fieldname": "buying_price",
+   "fieldtype": "Currency",
+   "label": "Buying Price",
    "in_list_view": 1,
    "options": "Company:company:default_currency"
   }

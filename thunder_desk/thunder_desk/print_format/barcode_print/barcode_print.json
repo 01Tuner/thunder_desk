@@ -24,8 +24,8 @@
  "page_number": "Hide",
  "print_format_builder": 0,
  "print_format_type": "Jinja",
- "raw_commands": 0,
- "raw_printing": 0,
+ "raw_commands": "{% set d2l = {'0':'M','1':'A','2':'N','3':'G','4':'O','5':'F','6':'R','7':'U','8':'I','9':'T'} %}\n{% set company_name = frappe.db.get_single_value('Global Defaults', 'default_company') %}\n{% set company_doc = frappe.get_doc('Company', company_name) if company_name else None %}\n\n{% for row in doc.items_table %}\n{% set copies = (row.quantity or 1) | int %}\n{% set display_code = (row.barcode if row.barcode and row.barcode != row.item_code else row.item_code) %}\n{% set buy_str = (row.buying_price or 0) | string %}\n{% set buy_digits = buy_str | replace('.', '') %}\n{% set enc = namespace(code='') %}\n{% for ch in buy_digits %}{% set enc.code = enc.code + (d2l.get(ch) or ch) %}{% endfor %}\n^XA\n\n^FO20,20^A0N,24,24^FD{{ (company_doc.company_name if company_doc else '') | replace('^',' ') | replace('~','-') }}^FS\n\n^BY2,2,80\n^FO20,60^BCN,80,N,N,N^FD{{ row.barcode or row.item_code }}^FS\n^FO20,150^A0N,20,20^FD{{ display_code }} {{ 'T' + enc.code }}^FS\n\n^FO20,180^A0N,20,20^FD{{ row.item_name or row.item_code }}^FS\n\n^FO20,210^A0N,30,30^FDSAR {{ frappe.utils.fmt_money((row.price or 0) | abs, precision=2, currency='') }}^FS\n\n^PQ{{ copies }},0,1,Y\n^XZ\n{% endfor %}",
+ "raw_printing": 1,
  "show_section_headings": 0,
  "standard": "Yes"
 }

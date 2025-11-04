@@ -1,73 +1,97 @@
 {
- "actions": [],
- "creation": "2025-01-28 14:00:00.000000",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-"barcode_list",
- "items_table",
- "page_size"
- ],
- "fields": [
- 
-  {
-   "fieldname": "barcode_list",
-   "fieldtype": "Small Text",
-   "label": "Barcode List",
-   "hidden": 1
-  },
-  {
-   "fieldname": "items_table",
-   "fieldtype": "Table",
-   "label": "Items to Print",
-   "options": "Barcode Print Item",
-   "reqd": 1
-  },
-  {
-   "default": "A4",
-   "fieldname": "page_size",
-   "fieldtype": "Select",
-   "label": "Page Size",
-   "options": "A4\nLetter\nLegal\nA5\n4x6in\n80mm Roll\n58mm Roll"
-  }
- ],
- "index_web_pages_for_search": 1,
- "istable": 0,
- "links": [],
- "modified": "2025-01-28 14:00:00.000000",
- "modified_by": "Administrator",
- "module": "Barcode Print",
- "name": "Barcode Print",
- "naming_rule": "By fieldname",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Item Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+  "actions": [],
+  "creation": "2025-01-28 14:00:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "barcode_list",
+    "selling_price_list",
+    "col_break_price_lists",
+    "buying_price_list",
+    "section_break_items_table",
+    "items_table"
+  ],
+  "fields": [
+    {
+      "fieldname": "section_break",
+      "fieldtype": "Section Break",
+      "label": "Price List"
+    },
+    {
+      "fieldname": "barcode_list",
+      "fieldtype": "Small Text",
+      "label": "Barcode List",
+      "hidden": 1
+    },
+    {
+      "fieldname": "selling_price_list",
+      "fieldtype": "Link",
+      "label": "Selling Price List",
+      "options": "Price List",
+      "columns": 1
+    },
+    {
+      "fieldname": "col_break_price_lists",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "buying_price_list",
+      "fieldtype": "Link",
+      "label": "Buying Price List",
+      "options": "Price List",
+      "columns": 1
+    },
+    {
+      "fieldname": "section_break_items_table",
+      "fieldtype": "Section Break",
+      "label": "Items Section"
+    },
+    {
+      "fieldname": "items_table",
+      "fieldtype": "Table",
+      "label": "Items to Print",
+      "options": "Barcode Print Item",
+      "reqd": 1,
+      "columns": 0
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "istable": 0,
+  "links": [],
+  "modified": "2025-01-28 14:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Barcode Print",
+  "name": "Barcode Print",
+  "naming_rule": "By fieldname",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Item Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": []
 }
