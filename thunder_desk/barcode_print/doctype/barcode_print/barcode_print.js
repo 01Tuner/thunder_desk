@@ -37,8 +37,8 @@ frappe.ui.form.on('Barcode Print', {
         // Add custom buttons
         frm.add_custom_button(__('Print Barcodes'), function() {
             if (frm.doc.items_table && frm.doc.items_table.length > 0) {
-                const print_url = `/app/print/${encodeURIComponent(frm.doc.doctype)}/${encodeURIComponent(frm.doc.name)}?format=${encodeURIComponent('Barcode Print')}&no_letterhead=1`;
-                window.open(print_url, '_blank');
+                frappe.route_options = {"format": "Barcode Print"};
+                frappe.set_route('print', frm.doc.doctype, frm.doc.name);
             } else {
                 frappe.show_alert({
                     message: __('No barcodes to print. Please add items.'),

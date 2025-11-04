@@ -6,11 +6,13 @@
   "engine": "InnoDB",
   "field_order": [
     "barcode_list",
-    "selling_price_list",
-    "col_break_price_lists",
-    "buying_price_list",
     "section_break_items_table",
-    "items_table"
+    "items_table",
+    "section_break_print_settings",
+    "buying_price_list",
+    "selling_price_list",
+    "col_break_more_settings",
+    "page_size"
   ],
   "fields": [
     {
@@ -29,7 +31,7 @@
       "fieldtype": "Link",
       "label": "Selling Price List",
       "options": "Price List",
-      "columns": 1
+      "columns": 2
     },
     {
       "fieldname": "col_break_price_lists",
@@ -40,12 +42,12 @@
       "fieldtype": "Link",
       "label": "Buying Price List",
       "options": "Price List",
-      "columns": 1
+      "columns": 2
     },
     {
       "fieldname": "section_break_items_table",
       "fieldtype": "Section Break",
-      "label": "Items Section"
+      "label": ""
     },
     {
       "fieldname": "items_table",
@@ -54,6 +56,24 @@
       "options": "Barcode Print Item",
       "reqd": 1,
       "columns": 0
+    },
+    {
+      "fieldname": "section_break_print_settings",
+      "fieldtype": "Section Break",
+      "label": "More Settings",
+      "collapsible": 1,
+      "collapse": 1
+    },
+    {
+      "fieldname": "page_size",
+      "fieldtype": "Select",
+      "label": "Page Size",
+      "default": null,
+      "options": "\nROLL\nA4\nA5\nLetter\nLegal"
+    },
+    {
+      "fieldname": "col_break_more_settings",
+      "fieldtype": "Column Break"
     }
   ],
   "index_web_pages_for_search": 1,

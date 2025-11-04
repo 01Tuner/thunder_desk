@@ -91,10 +91,7 @@ def generate_barcode_print(item_code, quantity=1, settings=None):
 		"print_price": settings.get("print_price", 1),
 		"print_item_name": settings.get("print_item_name", 1),
 		"layout": settings.get("layout", "Standard"),
-		"paper_size": settings.get("paper_size", "A4"),
 		"barcode_type": settings.get("barcode_type", "CODE128"),
-		"barcode_height": settings.get("barcode_height", 50),
-		"barcode_width": settings.get("barcode_width", 200)
 	})
 
 	for b in barcodes:
