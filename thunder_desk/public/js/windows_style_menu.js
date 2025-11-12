@@ -225,10 +225,10 @@ function getERPNextMenuStructure() {
             "icon": "fa fa-bar-chart",
             "color": "#9b59b6",
             "submenus": [
+                {"label": __("All Reports"), "route": "/app/reports", "icon": "fa fa-list"},
                 {"label": __("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "report_name": "Sales Analytics", "icon": "fa fa-line-chart"},
                 {"label": __("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
                 {"label": __("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
-                {"label": __("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
                 {"label": __("Profit and Loss Statement"), "route": "/app/query-report/Profit%20and%20Loss%20Statement", "report_name": "Profit and Loss Statement", "icon": "fa fa-calculator"},
                 {"label": __("Balance Sheet"), "route": "/app/query-report/Balance%20Sheet", "report_name": "Balance Sheet", "icon": "fa fa-file-text"},
                 {"label": __("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"}
@@ -271,6 +271,8 @@ function getERPNextMenuStructure() {
                         // Skip doctypes that don't exist or have permission issues
                         console.warn(`Permission check failed for doctype: ${doctype_to_check}`, e);
                     }
+                } else {
+                    can_access = true;
                 }
             }
 

@@ -1,0 +1,20 @@
+{
+ "content": null,
+ "creation": "2025-11-12 11:37:43.203108",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "bar-chart",
+ "idx": 0,
+ "modified": "2025-11-12 11:37:43.203108",
+ "modified_by": "Administrator",
+ "module": "Thunder Desk",
+ "name": "reports",
+ "owner": "Administrator",
+ "page_name": "reports",
+ "roles": [],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Reports & Analytics"
+}

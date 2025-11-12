@@ -82,10 +82,10 @@ def get_context(context):
             "icon": "fa fa-bar-chart",
             "color": "#9b59b6",
             "items": [
+                {"label": _("All Reports"), "route": "/app/reports", "icon": "fa fa-list"},
                 {"label": _("Sales Analytics"), "route": "/app/query-report/Sales%20Analytics", "report_name": "Sales Analytics", "icon": "fa fa-line-chart"},
                 {"label": _("Purchase Analytics"), "route": "/app/query-report/Purchase%20Analytics", "report_name": "Purchase Analytics", "icon": "fa fa-line-chart"},
                 {"label": _("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
-                {"label": _("Accounts Receivable"), "route": "/app/query-report/Accounts%20Receivable", "report_name": "Accounts Receivable", "icon": "fa fa-money"},
                 {"label": _("Profit and Loss Statement"), "route": "/app/query-report/Profit%20and%20Loss%20Statement", "report_name": "Profit and Loss Statement", "icon": "fa fa-calculator"},
                 {"label": _("Balance Sheet"), "route": "/app/query-report/Balance%20Sheet", "report_name": "Balance Sheet", "icon": "fa fa-file-text"},
                 {"label": _("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"},
@@ -128,7 +128,8 @@ def get_context(context):
                     except Exception:
                         # Skip doctypes that don't exist or have permission issues
                         pass
-
+                else:
+                    can_access = True
             if can_access:
                 filtered_items.append(item)
 
