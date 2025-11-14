@@ -1,13 +1,11 @@
-{% extends "templates/web.html" %}
-{% block title %}{{ title }}{% endblock %}
-{% block head_include %}
+{% extends "templates/web.html" %} {% block title %}{{ title }}{% endblock %} {% block head_include
+%}
 <link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css" />
 <link
 	rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 />
-{% endblock %}
-{% block content %}
+{% endblock %} {% block content %}
 <div class="thunder-dashboard">
 	<!-- Header -->
 	<div class="dashboard-header">
@@ -87,4 +85,68 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	// Handle logout functionality
+	function handleLogout(event) {
+		event.preventDefault();
+
+		// Show loading state on logout button
+		const logoutBtn = event.target.closest(".logout-btn");
+		const logoutIcon = logoutBtn.querySelector("i");
+		const logoutText = logoutBtn.querySelector("span") || logoutBtn;
+
+		logoutIcon.className = "fa fa-spinner fa-spin";
+		if (logoutText.textContent) {
+			logoutText.textContent = '{{ _("Logging out...") }}';
+		}
+
+		frappe.call({
+			method: "logout", // Maps to /api/method/logout
+			callback: function (response) {
+				if (response.message) {
+					frappe.msgprint("Logout successful!");
+					// Optionally redirect to login page
+					window.location.href = "/login";
+				} else {
+					frappe.msgprint("Logout failed!");
+				}
+			},
+			error: function (err) {
+				frappe.msgprint("Error during logout: " + err.message);
+			},
+		});
+	}
+
+	document.addEventListener("DOMContentLoaded", function () {
+		// Add hover effects and animations
+		const moduleCards = document.querySelectorAll(".module-card");
+
+		moduleCards.forEach((card) => {
+			card.addEventListener("mouseenter", function () {
+				this.style.transform = "translateY(-2px)";
+			});
+
+			card.addEventListener("mouseleave", function () {
+				this.style.transform = "translateY(0)";
+			});
+		});
+
+		// Handle module item clicks
+		const moduleItems = document.querySelectorAll(".module-item");
+
+		moduleItems.forEach((item) => {
+			item.addEventListener("click", function (e) {
+				// Add loading state
+				const arrow = this.querySelector(".item-arrow");
+				arrow.className = "fa fa-spinner fa-spin item-arrow";
+
+				// Reset after a delay
+				setTimeout(() => {
+					arrow.className = "fa fa-chevron-right item-arrow";
+				}, 2000);
+			});
+		});
+	});
+</script>
 {% endblock %}

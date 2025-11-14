@@ -88,8 +88,7 @@ def get_context(context):
                 {"label": _("Stock Balance"), "route": "/app/query-report/Stock%20Balance", "report_name": "Stock Balance", "icon": "fa fa-cubes"},
                 {"label": _("Profit and Loss Statement"), "route": "/app/query-report/Profit%20and%20Loss%20Statement", "report_name": "Profit and Loss Statement", "icon": "fa fa-calculator"},
                 {"label": _("Balance Sheet"), "route": "/app/query-report/Balance%20Sheet", "report_name": "Balance Sheet", "icon": "fa fa-file-text"},
-                {"label": _("General Ledger"), "route": "/app/query-report/General%20Ledger", "report_name": "General Ledger", "icon": "fa fa-book"},
-            ]
+                {"label": _("POS Register"), "route": "/app/query-report/POS%20Register", "report_name": "POS Register", "icon": "fa fa-book"}            ]
         },
         {
             "name": "Setup",
