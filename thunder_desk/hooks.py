@@ -137,6 +137,10 @@ doc_events = {
 		"on_update": "thunder_desk.table_logger.log_company_update",
 		"after_insert": "thunder_desk.table_logger.log_company_insert",
 		# "on_trash": "thunder_desk.table_logger.log_company_delete"
+	},
+	"Item Price": {
+		"after_insert": "thunder_desk.side_effects.update_item_standard_rate_from_price_list",
+		"on_update": "thunder_desk.side_effects.update_item_standard_rate_from_price_list",
 	}
 }
 
