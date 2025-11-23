@@ -12,7 +12,8 @@
     "buying_price_list",
     "selling_price_list",
     "col_break_more_settings",
-    "page_size"
+    "page_size",
+    "apply_tax_in_price"
   ],
   "fields": [
     {
@@ -63,6 +64,12 @@
       "label": "More Settings",
       "collapsible": 1,
       "collapse": 1
+    },
+    {
+      "fieldname": "apply_tax_in_price",
+      "fieldtype": "Check",
+      "label": "Apply Tax in Price",
+      "default": 0
     },
     {
       "fieldname": "page_size",

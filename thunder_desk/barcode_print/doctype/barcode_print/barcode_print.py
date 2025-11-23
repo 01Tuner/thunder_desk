@@ -105,3 +105,61 @@ def generate_barcode_print(item_code, quantity=1, settings=None):
 
 	doc.insert()
 	return doc.name
+
+@frappe.whitelist()
+def get_item_price_with_tax(item_code, company, price_list, qty=1):
+	"""Get item price including tax"""
+	if not item_code or not company:
+		return 0
+
+	# Fetch Price List currency
+	price_list_currency = frappe.db.get_value("Price List", price_list, "currency")
+	
+	args = {
+		"item_code": item_code,
+		"company": company,
+		"price_list": price_list,
+		"qty": qty,
+		"doctype": "Quotation", # Dummy doctype to trigger tax calculation
+		"transaction_date": frappe.utils.nowdate(),
+		"currency": price_list_currency,
+		"price_list_currency": price_list_currency
+	}
+
+	from erpnext.stock.get_item_details import get_item_details
+	details = get_item_details(args)
+	
+	# If we have a valid rate, return it. 
+	# get_item_details returns 'rate' which is the price list rate, 
+	# and we need to apply tax on top of it if it's exclusive, 
+	# or just return it if it's inclusive but we want to show the full amount.
+	# Actually, get_item_details calculates 'net_rate' and 'grand_total' (if we were simulating a doc).
+	# But get_item_details is for a single item row context.
+	
+	# Let's look at how get_item_details works. It returns 'item_tax_rate' map.
+	# We need to calculate the tax amount based on that.
+	
+	rate = details.get("price_list_rate") or 0
+	item_tax_map = json.loads(details.get("item_tax_rate") or "{}")
+	
+	tax_amount = 0
+	
+	if item_tax_map:
+		for tax_type, tax_rate in item_tax_map.items():
+			tax_amount += (rate * tax_rate / 100)
+	else:
+		# If no specific item tax, try to apply default Sales Taxes and Charges
+		default_tax_template = frappe.db.get_value("Sales Taxes and Charges Template", 
+			{"company": company, "is_default": 1}, "name")
+			
+		if default_tax_template:
+			taxes = frappe.get_all("Sales Taxes and Charges", 
+				filters={"parent": default_tax_template}, 
+				fields=["rate", "charge_type"])
+				
+			for tax in taxes:
+				if tax.charge_type == "On Net Total":
+					tax_amount += (rate * tax.rate / 100)
+				# Note: This is a simplified calculation. Complex tax rules (compounding, etc.) are not handled here.
+		
+	return rate + tax_amount
