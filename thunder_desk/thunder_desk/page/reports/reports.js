@@ -1,4 +1,4 @@
-frappe.pages['reports'].on_page_load = function(wrapper) {
+frappe.pages['reports'].on_page_load = function (wrapper) {
 	var page = frappe.ui.make_app_page({
 		parent: wrapper,
 		title: 'Reports & Analytics',
@@ -29,18 +29,18 @@ function render_reports_page(page) {
 			icon: "fa fa-shopping-cart",
 			color: "#2ecc71",
 			initial_items: [
-				{name: "Sales Analytics", label: "Sales Analytics", icon: "fa fa-line-chart"},
-				{name: "Sales Register", label: "Sales Register", icon: "fa fa-file-text"},
-				{name: "Sales Invoice Trends", label: "Sales Invoice Trends", icon: "fa fa-bar-chart"},
-				{name: "Item-wise Sales History", label: "Item-wise Sales History", icon: "fa fa-history"}
+				{ name: "Sales Analytics", label: "Sales Analytics", icon: "fa fa-line-chart" },
+				{ name: "Sales Register", label: "Sales Register", icon: "fa fa-file-text" },
+				{ name: "Sales Invoice Trends", label: "Sales Invoice Trends", icon: "fa fa-bar-chart" },
+				{ name: "Item-wise Sales History", label: "Item-wise Sales History", icon: "fa fa-history" }
 			],
 			more_items: [
-				{name: "Sales Person-wise Transaction Summary", label: "Sales Person Summary", icon: "fa fa-user"},
-				{name: "Territory-wise Sales", label: "Territory Sales", icon: "fa fa-map-marker"},
-				{name: "Customer Acquisition and Loyalty", label: "Customer Acquisition", icon: "fa fa-users"},
-				{name: "Inactive Customers", label: "Inactive Customers", icon: "fa fa-user-times"},
-				{name: "POS Register", label: "POS Register", icon: "fa fa-credit-card"},
-				{name: "Sales Partners Commission", label: "Partner Commission", icon: "fa fa-handshake-o"}
+				{ name: "Sales Person-wise Transaction Summary", label: "Sales Person Summary", icon: "fa fa-user" },
+				{ name: "Territory-wise Sales", label: "Territory Sales", icon: "fa fa-map-marker" },
+				{ name: "Customer Acquisition and Loyalty", label: "Customer Acquisition", icon: "fa fa-users" },
+				{ name: "Inactive Customers", label: "Inactive Customers", icon: "fa fa-user-times" },
+				{ name: "POS Register", label: "POS Register", icon: "fa fa-credit-card" },
+				{ name: "Sales Partners Commission", label: "Partner Commission", icon: "fa fa-handshake-o" }
 			],
 			has_more_items: true
 		},
@@ -50,15 +50,15 @@ function render_reports_page(page) {
 			icon: "fa fa-shopping-bag",
 			color: "#e74c3c",
 			initial_items: [
-				{name: "Purchase Analytics", label: "Purchase Analytics", icon: "fa fa-line-chart"},
-				{name: "Purchase Register", label: "Purchase Register", icon: "fa fa-file-text"},
-				{name: "Purchase Invoice Trends", label: "Purchase Invoice Trends", icon: "fa fa-bar-chart"},
-				{name: "Item-wise Purchase History", label: "Item-wise Purchase History", icon: "fa fa-history"}
+				{ name: "Purchase Analytics", label: "Purchase Analytics", icon: "fa fa-line-chart" },
+				{ name: "Purchase Register", label: "Purchase Register", icon: "fa fa-file-text" },
+				{ name: "Purchase Invoice Trends", label: "Purchase Invoice Trends", icon: "fa fa-bar-chart" },
+				{ name: "Item-wise Purchase History", label: "Item-wise Purchase History", icon: "fa fa-history" }
 			],
 			more_items: [
-				{name: "Supplier Quotation Comparison", label: "Supplier Quotation Comparison", icon: "fa fa-balance-scale"},
-				{name: "Procurement Tracker", label: "Procurement Tracker", icon: "fa fa-truck"},
-				{name: "Requested Items To Order And Receive", label: "Items to Order", icon: "fa fa-list"}
+				{ name: "Supplier Quotation Comparison", label: "Supplier Quotation Comparison", icon: "fa fa-balance-scale" },
+				{ name: "Procurement Tracker", label: "Procurement Tracker", icon: "fa fa-truck" },
+				{ name: "Requested Items To Order And Receive", label: "Items to Order", icon: "fa fa-list" }
 			],
 			has_more_items: true
 		},
@@ -68,19 +68,19 @@ function render_reports_page(page) {
 			icon: "fa fa-cubes",
 			color: "#f39c12",
 			initial_items: [
-				{name: "Stock Balance", label: "Stock Balance", icon: "fa fa-cubes"},
-				{name: "Stock Ledger", label: "Stock Ledger", icon: "fa fa-book"},
-				{name: "Stock Analytics", label: "Stock Analytics", icon: "fa fa-line-chart"},
-				{name: "Stock Ageing", label: "Stock Ageing", icon: "fa fa-clock-o"}
+				{ name: "Stock Balance", label: "Stock Balance", icon: "fa fa-cubes" },
+				{ name: "Stock Ledger", label: "Stock Ledger", icon: "fa fa-book" },
+				{ name: "Stock Analytics", label: "Stock Analytics", icon: "fa fa-line-chart" },
+				{ name: "Stock Ageing", label: "Stock Ageing", icon: "fa fa-clock-o" }
 			],
 			more_items: [
-				{name: "Stock Projected Qty", label: "Stock Projected Qty", icon: "fa fa-calculator"},
-				{name: "Warehouse-wise Stock Balance", label: "Warehouse Stock Balance", icon: "fa fa-building"},
-				{name: "Item-wise Reorder Level", label: "Reorder Level", icon: "fa fa-exclamation-triangle"},
-				{name: "Serial and Batch Summary", label: "Serial & Batch Summary", icon: "fa fa-list-ol"},
-				{name: "Batch-wise Balance History", label: "Batch Balance History", icon: "fa fa-history"},
-				{name: "Delivery Note Trends", label: "Delivery Note Trends", icon: "fa fa-truck"},
-				{name: "Purchase Receipt Trends", label: "Purchase Receipt Trends", icon: "fa fa-inbox"}
+				{ name: "Stock Projected Qty", label: "Stock Projected Qty", icon: "fa fa-calculator" },
+				{ name: "Warehouse-wise Stock Balance", label: "Warehouse Stock Balance", icon: "fa fa-building" },
+				{ name: "Item-wise Reorder Level", label: "Reorder Level", icon: "fa fa-exclamation-triangle" },
+				{ name: "Serial and Batch Summary", label: "Serial & Batch Summary", icon: "fa fa-list-ol" },
+				{ name: "Batch-wise Balance History", label: "Batch Balance History", icon: "fa fa-history" },
+				{ name: "Delivery Note Trends", label: "Delivery Note Trends", icon: "fa fa-truck" },
+				{ name: "Purchase Receipt Trends", label: "Purchase Receipt Trends", icon: "fa fa-inbox" }
 			],
 			has_more_items: true
 		},
@@ -90,20 +90,20 @@ function render_reports_page(page) {
 			icon: "fa fa-money",
 			color: "#3498db",
 			initial_items: [
-				{name: "Balance Sheet", label: "Balance Sheet", icon: "fa fa-file-text"},
-				{name: "Profit and Loss Statement", label: "Profit & Loss Statement", icon: "fa fa-calculator"},
-				{name: "General Ledger", label: "General Ledger", icon: "fa fa-book"},
-				{name: "Trial Balance", label: "Trial Balance", icon: "fa fa-balance-scale"}
+				{ name: "Balance Sheet", label: "Balance Sheet", icon: "fa fa-file-text" },
+				{ name: "Profit and Loss Statement", label: "Profit & Loss Statement", icon: "fa fa-calculator" },
+				{ name: "General Ledger", label: "General Ledger", icon: "fa fa-book" },
+				{ name: "Trial Balance", label: "Trial Balance", icon: "fa fa-balance-scale" }
 			],
 			more_items: [
-				{name: "Cash Flow", label: "Cash Flow", icon: "fa fa-money"},
-				{name: "Accounts Receivable", label: "Accounts Receivable", icon: "fa fa-arrow-circle-left"},
-				{name: "Accounts Payable", label: "Accounts Payable", icon: "fa fa-arrow-circle-right"},
-				{name: "Accounts Receivable Summary", label: "AR Summary", icon: "fa fa-file-o"},
-				{name: "Accounts Payable Summary", label: "AP Summary", icon: "fa fa-file-o"},
-				{name: "Payment Ledger", label: "Payment Ledger", icon: "fa fa-credit-card"},
-				{name: "Gross and Net Profit Report", label: "Gross & Net Profit", icon: "fa fa-line-chart"},
-				{name: "Financial Ratios", label: "Financial Ratios", icon: "fa fa-percent"}
+				{ name: "Cash Flow", label: "Cash Flow", icon: "fa fa-money" },
+				{ name: "Accounts Receivable", label: "Accounts Receivable", icon: "fa fa-arrow-circle-left" },
+				{ name: "Accounts Payable", label: "Accounts Payable", icon: "fa fa-arrow-circle-right" },
+				{ name: "Accounts Receivable Summary", label: "AR Summary", icon: "fa fa-file-o" },
+				{ name: "Accounts Payable Summary", label: "AP Summary", icon: "fa fa-file-o" },
+				{ name: "Payment Ledger", label: "Payment Ledger", icon: "fa fa-credit-card" },
+				{ name: "Gross and Net Profit Report", label: "Gross & Net Profit", icon: "fa fa-line-chart" },
+				{ name: "Financial Ratios", label: "Financial Ratios", icon: "fa fa-percent" }
 			],
 			has_more_items: true
 		},
@@ -113,10 +113,10 @@ function render_reports_page(page) {
 			icon: "fa fa-users",
 			color: "#9b59b6",
 			initial_items: [
-				{name: "Customer Ledger Summary", label: "Customer Ledger Summary", icon: "fa fa-book"},
-				{name: "Customer Credit Balance", label: "Customer Credit Balance", icon: "fa fa-credit-card"},
-				{name: "Customer-wise Item Price", label: "Customer Item Prices", icon: "fa fa-tags"},
-				{name: "Customers Without Any Sales Transactions", label: "Inactive Customers", icon: "fa fa-user-times"}
+				{ name: "Customer Ledger Summary", label: "Customer Ledger Summary", icon: "fa fa-book" },
+				{ name: "Customer Credit Balance", label: "Customer Credit Balance", icon: "fa fa-credit-card" },
+				{ name: "Customer-wise Item Price", label: "Customer Item Prices", icon: "fa fa-tags" },
+				{ name: "Customers Without Any Sales Transactions", label: "Inactive Customers", icon: "fa fa-user-times" }
 			],
 			more_items: [],
 			has_more_items: false
@@ -127,8 +127,8 @@ function render_reports_page(page) {
 			icon: "fa fa-truck",
 			color: "#1abc9c",
 			initial_items: [
-				{name: "Supplier Ledger Summary", label: "Supplier Ledger Summary", icon: "fa fa-book"},
-				{name: "Supplier-wise Sales Analytics", label: "Supplier Sales Analytics", icon: "fa fa-line-chart"}
+				{ name: "Supplier Ledger Summary", label: "Supplier Ledger Summary", icon: "fa fa-book" },
+				{ name: "Supplier-wise Sales Analytics", label: "Supplier Sales Analytics", icon: "fa fa-line-chart" }
 			],
 			more_items: [],
 			has_more_items: false
@@ -139,9 +139,9 @@ function render_reports_page(page) {
 			icon: "fa fa-gavel",
 			color: "#e67e22",
 			initial_items: [
-				{name: "Tax Withholding Details", label: "Tax Withholding Details", icon: "fa fa-file-text-o"},
-				{name: "TDS Computation Summary", label: "TDS Computation", icon: "fa fa-calculator"},
-				// {name: "Item Wise Purchase Register", label: "Purchase Register", icon: "fa fa-file-text"},
+				{ name: "Tax Withholding Details", label: "Tax Withholding Details", icon: "fa fa-file-text-o" },
+				{ name: "TDS Computation Summary", label: "TDS Computation", icon: "fa fa-calculator" },
+				{ name: "VAT Payable Report", label: "KSA VAT Report", icon: "fa fa-file-text" },
 				// {name: "Item Wise Sales Register", label: "Sales Register", icon: "fa fa-file-text"}
 			],
 			more_items: [],
@@ -199,7 +199,7 @@ function render_reports_page(page) {
 				<div class="report-categories">
 	`;
 
-	modules.forEach(function(module) {
+	modules.forEach(function (module) {
 		html += `
 			<div class="category-card">
 				<div class="category-header">
@@ -213,7 +213,7 @@ function render_reports_page(page) {
 		`;
 
 		// Initial items (first 4)
-		module.initial_items.forEach(function(item) {
+		module.initial_items.forEach(function (item) {
 			var route = item.route || `/app/query-report/${encodeURIComponent(item.name)}`;
 			html += `
 				<li class="report-item">
@@ -229,7 +229,7 @@ function render_reports_page(page) {
 		// Hidden more items
 		if (module.has_more_items) {
 			html += `<div class="more-reports" id="moreItems${module.name}" style="display: none;">`;
-			module.more_items.forEach(function(item) {
+			module.more_items.forEach(function (item) {
 				var route = item.route || `/app/query-report/${encodeURIComponent(item.name)}`;
 				html += `
 					<li class="report-item">
