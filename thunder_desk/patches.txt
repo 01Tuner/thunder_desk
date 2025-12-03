@@ -4,3 +4,5 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+thunder_desk.patches.zatca_prerequesties_system_config
+thunder_desk.patches.thunder_desk_system_config
