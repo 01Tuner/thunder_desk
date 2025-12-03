@@ -8,7 +8,7 @@ app_license = "Copyright rafeeq"
 # Apps
 # ------------------
 
-required_apps = ["erpnext"]
+required_apps = ["erpnext@version-15", "https://github.com/01Tuner/zatca_bridge.git"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
