@@ -28,6 +28,13 @@ $(window).on("focus", function () {
 });
 
 function initializeWindowsStyleMenu() {
+	// Don't show menu on setup-wizard page
+	const currentPath = window.location.pathname;
+	if (currentPath && currentPath.includes("/app/setup-wizard")) {
+		$("#windows-style-menu").remove();
+		return;
+	}
+
 	const isTabApp = window.opener || window.parent !== window;
 	const isDesktopApp = !isTabApp && (window.process || window.require);
 

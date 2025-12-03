@@ -15,7 +15,8 @@ def execute():
 
 	# Accounts Settings
 	accounts_settings = frappe.get_single("Accounts Settings")
-	accounts_settings.round_tax_with_row = 1
+	# Enable Round Tax Amount Row-wise (under Invoice and Billing tab)
+	accounts_settings.round_row_wise_tax = 1
 	accounts_settings.save()
 
 	# Currency (SAR)
