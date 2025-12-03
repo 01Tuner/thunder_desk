@@ -105,7 +105,7 @@ def get_modules():
                 {"label": _("Sales Order"), "doctype": "Sales Order", "icon": "fa fa-file-text-o"},
                 {"label": _("Sales Invoice"), "doctype": "Sales Invoice", "icon": "fa fa-file"},
                 {"label": _("POS Invoice"), "doctype": "POS Invoice", "icon": "fa fa-credit-card"},
-                {"label": _("Point of Sale"), "route": "/app/point-of-sale", "required_doctype": "POS Invoice", "icon": "fa fa-th"},
+                {"label": _("Payment Entry"), "doctype": "Payment Entry", "icon": "fa fa-th"},
             ]
         },
         {

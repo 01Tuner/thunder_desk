@@ -9,9 +9,6 @@ import frappe
 def execute():
 	"""Update SAR currency symbol to use SVG image"""
 	
-	frappe.init(site='erpbo.site')
-	frappe.connect()
-	
 	# Check if SAR currency exists
 	if frappe.db.exists("Currency", "SAR"):
 		# Update the symbol field with HTML img tag
@@ -19,15 +16,12 @@ def execute():
 		
 		frappe.db.set_value("Currency", "SAR", "symbol", svg_symbol)
 		
-		frappe.db.commit()
-		
 		print("✓ Updated SAR currency symbol with SVG image")
 		print(f"  Symbol: {svg_symbol}")
 	else:
 		print("✗ SAR currency not found in the system")
 		print("  Please create SAR currency first")
 	
-	frappe.destroy()
 
 if __name__ == "__main__":
 	execute()
