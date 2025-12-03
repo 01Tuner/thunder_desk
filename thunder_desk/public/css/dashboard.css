@@ -31,6 +31,88 @@
     margin-right: 12px;
 }
 
+.dashboard-search-container {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 20px;
+    position: relative;
+}
+
+.search-bar {
+    position: relative;
+    width: 100%;
+}
+
+.dashboard-search-input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.dashboard-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* AwesomeBar dropdown styling for dashboard */
+.dashboard-search-container .awesomplete {
+    width: 100%;
+}
+
+.dashboard-search-container .awesomplete > ul {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-top: 4px;
+    border: none;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dashboard-search-container .awesomplete > ul > li {
+    padding: 0;
+}
+
+.dashboard-search-container .awesomplete > ul > li > a {
+    padding: 12px 16px;
+    color: #2c3e50;
+    text-decoration: none;
+    display: block;
+    transition: background 0.2s ease;
+}
+
+.dashboard-search-container .awesomplete > ul > li > a:hover,
+.dashboard-search-container .awesomplete > ul > li[aria-selected="true"] > a {
+    background: #f8f9fa;
+    color: #2c3e50;
+}
+
+.dashboard-search-container .awesomplete > ul > li > a span.text-muted {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+}
+
 .user-info {
     display: flex;
     align-items: center;
@@ -215,8 +297,19 @@
         text-align: center;
     }
 
+    .dashboard-search-container {
+        max-width: 100%;
+        margin: 12px 0;
+        order: 2;
+    }
+
     .dashboard-title {
         font-size: 1.3rem;
+        order: 1;
+    }
+
+    .user-info {
+        order: 3;
     }
 
     .modules-grid {

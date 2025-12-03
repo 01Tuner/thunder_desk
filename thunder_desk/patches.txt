@@ -7,3 +7,4 @@
 thunder_desk.patches.zatca_prerequesties_system_config
 thunder_desk.patches.thunder_desk_system_config
 thunder_desk.patches.update_sar_currency_symbol
+thunder_desk.patches.add_payment_modes

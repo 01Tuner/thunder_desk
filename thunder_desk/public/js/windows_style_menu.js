@@ -199,12 +199,7 @@ function getERPNextMenuStructure() {
 				{ label: __("Sales Order"), doctype: "Sales Order", icon: "fa fa-file-text-o" },
 				{ label: __("Sales Invoice"), doctype: "Sales Invoice", icon: "fa fa-file" },
 				{ label: __("POS Invoice"), doctype: "POS Invoice", icon: "fa fa-credit-card" },
-				{
-					label: __("Point of Sale"),
-					route: "/app/point-of-sale",
-					required_doctype: "POS Invoice",
-					icon: "fa fa-th",
-				},
+				{ label: __("Payment Entry"), doctype: "Payment Entry", icon: "fa fa-th" },
 			],
 		},
 		{
