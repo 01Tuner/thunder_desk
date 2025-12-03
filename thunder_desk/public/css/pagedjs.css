@@ -1,0 +1,56 @@
+/* Fix for Paged.js in ERPNext */
+
+@media print {
+    /* Reset body and html for Paged.js */
+    body {
+        margin: 0;
+        padding: 0;
+        background: none;
+    }
+
+    /* Hide ERPNext default elements */
+    .navbar,
+    .page-head,
+    .page-footer,
+    .footer,
+    .print-format-gutter,
+    .print-download-btn,
+    .print-preview-btn {
+        display: none !important;
+    }
+
+    /* Ensure the print format container allows Paged.js to take over */
+    .print-format {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        min-height: auto !important;
+    }
+
+    /* Paged.js specific overrides */
+    .pagedjs_pages {
+        display: block;
+        width: 100%;
+    }
+
+    .pagedjs_page {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+}
+
+/* Screen styles for previewing Paged.js output */
+.pagedjs_pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pagedjs_page {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}

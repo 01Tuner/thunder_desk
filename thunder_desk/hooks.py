@@ -78,7 +78,7 @@ jinja = {
 # ------------
 
 # before_install = "thunder_desk.install.before_install"
-# after_install = "thunder_desk.install.after_install"
+after_install = "thunder_desk.patches.update_sar_currency_symbol.execute"
 
 # Uninstallation
 # ------------
@@ -195,8 +195,11 @@ doc_events = {
 
 # Request Events
 # ----------------
-# before_request = ["thunder_desk.utils.before_request"]
-# after_request = ["thunder_desk.utils.after_request"]
+# update_website_context = "thunder_desk.website.update_website_context"
+
+web_include_js = [
+    "/assets/thunder_desk/js/print_polyfill.js"
+]
 
 # Job Events
 # ----------
@@ -243,12 +246,14 @@ doc_events = {
 
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [
-    "/assets/thunder_desk/js/windows_style_menu.js"
+    "/assets/thunder_desk/js/windows_style_menu.js",
+	"/assets/thunder_desk/js/print_polyfill.js"
 ]
 
 app_include_css = [
     "/assets/thunder_desk/css/windows_style_menu.css",
-    "/assets/thunder_desk/css/global_no_sidebar.css"
+    "/assets/thunder_desk/css/global_no_sidebar.css",
+    "/assets/thunder_desk/css/pagedjs.css"
 ]
 
 # Fixtures

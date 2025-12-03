@@ -1,0 +1,134 @@
+<!-- Corrected Paged.js Print Format v2 -->
+<!-- Paste this into your Custom Print Format HTML -->
+
+<style>
+    /* 1. Reset ERPNext Print Format Container */
+    .print-format {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        min-height: auto !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* 2. Hide ERPNext Header/Footer & UI Elements */
+    .print-heading,
+    .print-footer,
+    .print-format-gutter .action-banner,
+    .page-break {
+        display: none !important;
+    }
+
+    /* 3. Paged.js Page Configuration (Print & Screen Preview) */
+    @page {
+        size: A4;
+        margin: 20mm;
+
+        @top-center {
+            content: element(runningHeader);
+        }
+
+        @bottom-center {
+            content: element(runningFooter);
+        }
+    }
+
+    /* 4. Define Running Elements */
+    #runningHeader {
+        position: running(runningHeader);
+        text-align: center;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    #runningFooter {
+        position: running(runningFooter);
+        text-align: center;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+        margin-top: 20px;
+        width: 100%;
+        font-size: 10pt;
+    }
+
+    #runningFooter::after {
+        content: "Page " counter(page) " of " counter(pages);
+        display: block;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    /* 5. Screen Preview Styles (So it looks like pages on screen) */
+    @media screen {
+        body {
+            background-color: #d1d8dd;
+            /* Match ERPNext gutter */
+        }
+
+        .pagedjs_pages {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .pagedjs_page {
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            /* Ensure page size is respected on screen */
+            width: 210mm;
+            height: 297mm;
+        }
+    }
+
+    /* Content Styling */
+    .report-content {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+</style>
+
+<!-- Running Header Content -->
+<div id="runningHeader">
+    <h2 style="margin:0; color:#2c3e50;">ACME CORPORATION</h2>
+    <div style="font-size: 10pt;">Sales Invoice • INV-2025-9999</div>
+</div>
+
+<!-- Running Footer Content -->
+<div id="runningFooter">
+    Thank you for your business • www.acme.com
+</div>
+
+<!-- Main Content -->
+<div class="report-content">
+    <h1 style="color:#27ae60;">Paged.js Integration Demo</h1>
+    <p>This document demonstrates running headers and footers using Paged.js in ERPNext.</p>
+
+    <!-- Example Content Generation -->
+    {% for i in range(50) %}
+    <p>{{ i + 1 }}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua.</p>
+    {% endfor %}
+</div>
+
+<!-- Script Loader: Checks if Paged.js is already loaded (by global polyfill) before loading it again -->
+<script>
+    if (!window.PagedConfig) {
+        window.PagedConfig = { auto: true };
+    }
+
+    // Check if Paged.js script is already present
+    if (!document.querySelector('script[src*="paged.polyfill.js"]')) {
+        console.log("Paged.js not found, loading...");
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/pagedjs/dist/paged.polyfill.js';
+        document.head.appendChild(script);
+    } else {
+        console.log("Paged.js already loaded.");
+    }
+</script>
