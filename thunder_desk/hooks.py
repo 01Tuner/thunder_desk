@@ -11,15 +11,20 @@ app_license = "Copyright rafeeq"
 required_apps = ["erpnext@version-15"]
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "thunder_desk",
-# 		"logo": "/assets/thunder_desk/logo.png",
-# 		"title": "Thunder Desk",
-# 		"route": "/thunder_desk",
-# 		"has_permission": "thunder_desk.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "thunder_desk",
+		# NOTE:
+		# Place your logo file at:
+		#   apps/thunder_desk/thunder_desk/public/logo.png
+		# It will be served by Frappe as:
+		#   /assets/thunder_desk/logo.png
+		"logo": "/assets/thunder_desk/logo.png",
+		"title": "Thunder Desk",
+		"route": "/thunder_desk",
+		"has_permission": "thunder_desk.api.permission.has_app_permission"
+	}
+]
 
 # Includes in <head>
 # ------------------
