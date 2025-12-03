@@ -20,8 +20,68 @@ def get_context(context):
     # Get user info
     user = frappe.get_doc("User", frappe.session.user)
 
-    # Define modules with their details
-    all_modules = [
+    # Get modules
+    all_modules = get_modules()
+
+    # Filter modules and items based on user permissions
+    modules = []
+    for module in all_modules:
+        # Filter items based on permissions
+        filtered_items = []
+        for item in module["items"]:
+            # Handle permission checking based on item type
+            can_access = False
+
+            if item.get("report_name"):
+                # Check report permission - get the ref_doctype first
+
+                can_access = True
+            else:
+                # Check doctype permission (could be 'doctype' or 'required_doctype')
+                doctype_to_check = item.get("doctype") or item.get("required_doctype")
+                if doctype_to_check:
+                    try:
+                        can_access = frappe.has_permission(doctype_to_check, "read")
+                    except Exception:
+                        # Skip doctypes that don't exist or have permission issues
+                        pass
+                else:
+                    can_access = True
+            if can_access:
+                filtered_items.append(item)
+
+        # Only include modules that have at least one accessible item
+        if filtered_items:
+            module_copy = module.copy()
+            module_copy["items"] = filtered_items
+            modules.append(module_copy)
+
+    # Set page context
+    context.update({
+        "title": _("Thunder Desk Dashboard"),
+        "user_name": user.full_name or user.name,
+        "modules": modules,
+        "show_sidebar": False,
+        "no_cache": True
+    })
+
+    return context
+
+
+@frappe.whitelist()
+def get_module_count(doctype):
+    """Get count of documents for a module"""
+    try:
+        if frappe.has_permission(doctype, "read"):
+            return frappe.db.count(doctype)
+        return 0
+    except Exception:
+        return 0
+
+
+def get_modules():
+    """Get all modules definition"""
+    return [
         {
             "name": "Customer",
             "title": _("Customer Management"),
@@ -105,57 +165,80 @@ def get_context(context):
         }
     ]
 
-    # Filter modules and items based on user permissions
-    modules = []
-    for module in all_modules:
-        # Filter items based on permissions
-        filtered_items = []
-        for item in module["items"]:
-            # Handle permission checking based on item type
-            can_access = False
-
-            if item.get("report_name"):
-                # Check report permission - get the ref_doctype first
-
-                can_access = True
-            else:
-                # Check doctype permission (could be 'doctype' or 'required_doctype')
-                doctype_to_check = item.get("doctype") or item.get("required_doctype")
-                if doctype_to_check:
-                    try:
-                        can_access = frappe.has_permission(doctype_to_check, "read")
-                    except Exception:
-                        # Skip doctypes that don't exist or have permission issues
-                        pass
-                else:
-                    can_access = True
-            if can_access:
-                filtered_items.append(item)
-
-        # Only include modules that have at least one accessible item
-        if filtered_items:
-            module_copy = module.copy()
-            module_copy["items"] = filtered_items
-            modules.append(module_copy)
-
-    # Set page context
-    context.update({
-        "title": _("Thunder Desk Dashboard"),
-        "user_name": user.full_name or user.name,
-        "modules": modules,
-        "show_sidebar": False,
-        "no_cache": True
-    })
-
-    return context
-
 
 @frappe.whitelist()
-def get_module_count(doctype):
-    """Get count of documents for a module"""
+def global_search(text, start=0, limit=10):
+    """
+    Global search that includes:
+    1. Modules/Pages
+    2. Doctypes (Navigation)
+    3. Reports
+    4. Global Search (Records)
+    """
+    start = int(start)
+    limit = int(limit)
+    results = []
+    text = text.lower()
+
+    if start == 0:
+        # 1. Search Modules
+        modules = get_modules()
+        for module in modules:
+            # Search Module Title
+            if text in module["title"].lower():
+                results.append({
+                    "type": "Module",
+                    "name": module["title"],
+                    "doctype": "Module",
+                    "route": f"/dashboard#module-{module['name']}" # Anchor link to module on dashboard
+                })
+            
+            # Search Module Items
+            for item in module["items"]:
+                label = item["label"]
+                if text in label.lower():
+                    route = item.get("route")
+                    if not route and item.get("doctype"):
+                         route = f"/app/{frappe.scrub(item['doctype'])}"
+                    
+                    if route:
+                        results.append({
+                            "type": "Page",
+                            "name": label,
+                            "doctype": item.get("doctype") or "Page",
+                            "route": route
+                        })
+
+        # 2. Search Doctypes (Navigation) - Fallback for doctypes not in modules
+        doctypes = frappe.get_user().get_can_read()
+        for dt in doctypes:
+            if text in dt.lower():
+                # Avoid duplicates if already found in modules
+                if not any(r["name"] == dt for r in results):
+                    results.append({
+                        "type": "Doctype",
+                        "name": dt,
+                        "doctype": "DocType",
+                        "route": f"/app/{frappe.scrub(dt)}"
+                    })
+    
+    # Limit non-record results
+    if len(results) > 5:
+        results = results[:5]
+
+    # 3. Search Records using Global Search
     try:
-        if frappe.has_permission(doctype, "read"):
-            return frappe.db.count(doctype)
-        return 0
+        from frappe.utils.global_search import search
+        record_results = search(text, start=start, limit=limit)
+        
+        for record in record_results:
+            results.append({
+                "type": "Record",
+                "name": record.name,
+                "doctype": record.doctype,
+                "route": f"/app/{frappe.scrub(record.doctype)}/{record.name}"
+            })
     except Exception:
-        return 0
+        pass
+
+    return results
