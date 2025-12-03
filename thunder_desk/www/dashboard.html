@@ -1,10 +1,163 @@
 {% extends "templates/web.html" %} {% block title %}{{ title }}{% endblock %} {% block head_include
 %}
-<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css" />
-<link
-	rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-/>
+<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css?v=1.0.4" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<style>
+	/* Search Bar Styles */
+	.search-container {
+		position: relative;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	.search-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		background: rgba(255, 255, 255, 0.15);
+		border-radius: 8px;
+		padding: 8px 16px;
+		transition: all 0.3s ease;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.search-input-wrapper:focus-within {
+		background: rgba(255, 255, 255, 0.25);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		border-color: rgba(255, 255, 255, 0.3);
+	}
+
+	.search-icon {
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 16px;
+		margin-right: 12px;
+	}
+
+	.search-input {
+		width: 100%;
+		background: transparent;
+		border: none;
+		color: white;
+		font-size: 16px;
+		outline: none;
+	}
+
+	.search-input::placeholder {
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	/* Search Results Dropdown */
+	.search-results {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		background: white;
+		border-radius: 8px;
+		margin-top: 8px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+		z-index: 9999;
+		max-height: 400px;
+		overflow-y: auto;
+		display: none;
+		animation: slideDown 0.2s ease;
+	}
+
+	.search-results.show {
+		display: block;
+	}
+
+	.search-result-item {
+		padding: 12px 16px;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		border-bottom: 1px solid #f0f0f0;
+		transition: background 0.2s;
+		text-decoration: none !important;
+		color: #333;
+	}
+
+	.search-result-item:last-child {
+		border-bottom: none;
+	}
+
+	.search-result-item:hover {
+		background: #f8f9fa;
+	}
+
+	.result-icon {
+		width: 32px;
+		height: 32px;
+		background: #f0f4f8;
+		border-radius: 6px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 12px;
+		color: #5e64ff;
+		font-size: 14px;
+	}
+
+	.result-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.result-title {
+		font-weight: 600;
+		font-size: 14px;
+		margin-bottom: 2px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.result-subtitle {
+		font-size: 12px;
+		color: #666;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.no-results {
+		padding: 20px;
+		text-align: center;
+		color: #666;
+		font-size: 14px;
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Adjust header layout */
+	.header-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 20px;
+	}
+
+	.dashboard-title {
+		margin: 0;
+		white-space: nowrap;
+	}
+
+	.user-info {
+		white-space: nowrap;
+	}
+</style>
 {% endblock %} {% block content %}
 <div class="thunder-dashboard">
 	<!-- Header -->
@@ -15,6 +168,19 @@
 					<i class="fa fa-dashboard"></i>
 					{{ _("Thunder POS") }}
 				</h1>
+
+				<!-- Global Search -->
+				<div class="search-container">
+					<div class="search-input-wrapper">
+						<i class="fa fa-search search-icon"></i>
+						<input type="text" class="search-input" placeholder="{{ _('Search for anything...') }}"
+							id="global-search" autocomplete="off">
+					</div>
+					<div class="search-results" id="search-results">
+						<!-- Results will be populated here -->
+					</div>
+				</div>
+
 				<div class="user-info">
 					<span class="welcome-text">{{ _("Welcome,") }} {{ user_name }}</span>
 					<a href="#" class="logout-btn" onclick="handleLogout(event)">
@@ -69,10 +235,8 @@
 
 					<div class="module-items">
 						{% for item in module['items'] %}
-						<a
-							href="{% if item.get('route') %}{{ item.route }}{% else %}/app/{{ item.doctype | lower | replace(' ', '-') }}{% endif %}"
-							class="module-item"
-						>
+						<a href="{% if item.get('route') %}{{ item.route }}{% else %}/app/{{ item.doctype | lower | replace(' ', '-') }}{% endif %}"
+							class="module-item">
 							<i class="{{ item.icon }}"></i>
 							<span>{{ item.label }}</span>
 							<i class="fa fa-chevron-right item-arrow"></i>
@@ -119,6 +283,88 @@
 	}
 
 	document.addEventListener("DOMContentLoaded", function () {
+		// Global Search Functionality
+		const searchInput = document.getElementById('global-search');
+		const searchResults = document.getElementById('search-results');
+		let searchTimeout;
+
+		searchInput.addEventListener('input', function (e) {
+			const query = e.target.value.trim();
+
+			clearTimeout(searchTimeout);
+
+			if (query.length < 3) {
+				searchResults.classList.remove('show');
+				return;
+			}
+
+			searchTimeout = setTimeout(() => {
+				performSearch(query);
+			}, 300);
+		});
+
+		// Close search results when clicking outside
+		document.addEventListener('click', function (e) {
+			if (!e.target.closest('.search-container')) {
+				searchResults.classList.remove('show');
+			}
+		});
+
+		function performSearch(query) {
+			frappe.call({
+				method: 'thunder_desk.www.dashboard.global_search',
+				args: {
+					text: query,
+					start: 0,
+					limit: 10
+				},
+				callback: function (r) {
+					if (r.message) {
+						renderResults(r.message);
+					} else {
+						renderNoResults();
+					}
+				}
+			});
+		}
+
+		function renderResults(results) {
+			if (!results || results.length === 0) {
+				renderNoResults();
+				return;
+			}
+
+			const html = results.map(item => {
+				const icon = item.type === 'Doctype' ? 'fa-list' : 'fa-file-text-o';
+				const subtitle = item.type === 'Doctype' ? 'List' : item.doctype;
+
+				return `
+				<a href="${item.route}" class="search-result-item">
+					<div class="result-icon">
+						<i class="fa ${icon}"></i>
+					</div>
+					<div class="result-content">
+						<div class="result-title">${item.name}</div>
+						<div class="result-subtitle">${subtitle}</div>
+					</div>
+				</a>
+				`;
+			}).join('');
+
+			searchResults.innerHTML = html;
+			searchResults.classList.add('show');
+		}
+
+		function renderNoResults() {
+			searchResults.innerHTML = `
+				<div class="no-results">
+					<i class="fa fa-search" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+					{{ _("No results found") }}
+				</div>
+			`;
+			searchResults.classList.add('show');
+		}
+
 		// Add hover effects and animations
 		const moduleCards = document.querySelectorAll(".module-card");
 
