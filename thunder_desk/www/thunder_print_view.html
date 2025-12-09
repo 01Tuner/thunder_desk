@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print View</title>
+    <script>
+        window.PagedConfig = {
+            auto: true,
+            after: (flow) => {
+                console.log("Paged.js rendering finished.");
+                setTimeout(() => {
+                    window.print();
+                }, 500); // Small delay to ensure rendering is fully stable
+            }
+        };
+    </script>
+    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+    <style>
+        @page {
+            /* size: A4; */
+            /* Increased margins to accommodate 150px header/footer (~40mm) */
+            margin: 50mm ;
+
+            @top-center {
+                content: element(header);
+            }
+
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+        }
+
+        .page-header {
+            position: running(header);
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #ccc;
+            padding: 0 20px;
+            font-size: 14px;
+            color: #444;
+            background-color: #fcfcfc;
+            /* For visibility */
+        }
+
+        .page-footer {
+            position: running(footer);
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 2px solid #ccc;
+            padding: 0 20px;
+            font-size: 12px;
+            color: #777;
+            background-color: #fcfcfc;
+            display: block;
+        }
+
+        .page-content {
+            background: white;
+        }
+    </style>
+    {% if print_styles %}
+    <!-- Dynamic Print Format Styles -->
+    <style>
+        {{ print_styles | safe }}
+    </style>
+    {% endif %}
+
+</head>
+
+<body>
+    <div class="page-content">
+        {% if print_content %}
+        <!-- Render the Frappe Print Format content -->
+        {{ print_content | safe }}
+        {% endif %}
+    </div>
+</body>
+
+</html>

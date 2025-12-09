@@ -34,7 +34,9 @@ required_apps = ["erpnext@version-15"]
 # webform_include_css = {"doctype": "public/css/doctype.css"}
 
 # include js in page
-# page_js = {"page" : "public/js/file.js"}
+page_js = {
+    "print" : "public/js/overrides/print_overrides.js"
+}
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}

@@ -21,10 +21,13 @@ def get_context(context):
             doc=doc,
             print_format=pf,
             meta=meta,
-            no_letterhead=1, # Disable standard letterhead to use our Custom Print View header
+            no_letterhead=frappe.form_dict.no_letterhead or False, # Disable standard letterhead to use our Custom Print View header
             trigger_print=False
         )
         
+
+        letterhead = frappe.form_dict.letterhead or None
+
         # Get styles
         style = get_print_style(print_format=pf)
         
