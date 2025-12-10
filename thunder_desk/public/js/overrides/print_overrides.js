@@ -4,7 +4,7 @@
 const overridePrintView = () => {
     if (frappe.ui && frappe.ui.form && frappe.ui.form.PrintView) {
         frappe.ui.form.PrintView.prototype.render_page = function (method, printit = false) {
-            if (method === "/printview?" && this.selected_format() !== "Standard") {
+            if (method === "/printview?" && this.selected_format() !== "Standard" && !this.is_raw_printing()) {
                 method = "/thunder_print_view?";
             }
 
