@@ -35,7 +35,8 @@ required_apps = ["erpnext@version-15"]
 
 # include js in page
 page_js = {
-    "print" : "public/js/overrides/print_overrides.js"
+    "print" : "public/js/overrides/print_overrides.js",
+    "point-of-sale" : "public/js/pos_overrides.js"
 }
 
 # include js in doctype views
@@ -245,7 +246,7 @@ doc_events = {
 
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [
-    "/assets/thunder_desk/js/windows_style_menu.js"
+    "/assets/thunder_desk/js/windows_style_menu.js",
 ]
 
 app_include_css = [

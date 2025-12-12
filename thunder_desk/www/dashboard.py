@@ -199,7 +199,8 @@ def global_search(text, start=0, limit=10):
                 if text in label.lower():
                     route = item.get("route")
                     if not route and item.get("doctype"):
-                         route = f"/app/{frappe.scrub(item['doctype'])}"
+                         # Ensure kebab-case for standard doctype routes
+                         route = f"/app/{frappe.scrub(item['doctype']).replace('_', '-')}"
                     
                     if route:
                         results.append({
@@ -219,7 +220,7 @@ def global_search(text, start=0, limit=10):
                         "type": "Doctype",
                         "name": dt,
                         "doctype": "DocType",
-                        "route": f"/app/{frappe.scrub(dt)}"
+                        "route": f"/app/{frappe.scrub(dt).replace('_', '-')}"
                     })
     
     # Limit non-record results
@@ -236,7 +237,7 @@ def global_search(text, start=0, limit=10):
                 "type": "Record",
                 "name": record.name,
                 "doctype": record.doctype,
-                "route": f"/app/{frappe.scrub(record.doctype)}/{record.name}"
+                "route": f"/app/{frappe.scrub(record.doctype).replace('_', '-')}/{record.name}"
             })
     except Exception:
         pass
