@@ -39,4 +39,36 @@ const overridePrintView = () => {
     }
 };
 
+
+
+const hidePrintButtons = () => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+        a[href*="print-designer"],
+        a[href*="print_designer"] {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    const hidePdfButton = () => {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            if (btn.querySelector('use[href="#icon-small-file"]')) {
+                btn.style.setProperty('display', 'none', 'important');
+            }
+        });
+    };
+
+    // Check periodically for the button as it might be added dynamically
+    const interval = setInterval(hidePdfButton, 500);
+
+    // Stop checking after 10 seconds to avoid infinite background work
+    setTimeout(() => clearInterval(interval), 10000);
+
+    // Also run immediately
+    hidePdfButton();
+};
+
+hidePrintButtons();
 overridePrintView();
