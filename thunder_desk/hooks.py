@@ -42,7 +42,8 @@ page_js = {
 # include js in doctype views
 doctype_js = {
     "Item" : "public/js/item_overrides.js",
-    "Sales Invoice": "public/js/sales_invoice_custom.js"
+    "Sales Invoice": "public/js/sales_invoice_custom.js",
+    "Purchase Invoice": "public/js/purchase_invoice_custom.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -147,7 +148,10 @@ doc_events = {
 	"Item Price": {
 		"after_insert": "thunder_desk.side_effects.update_item_standard_rate_from_price_list",
 		"on_update": "thunder_desk.side_effects.update_item_standard_rate_from_price_list",
-	}
+	},
+    "Purchase Invoice": {
+        "on_submit": "thunder_desk.api.update_item_selling_price"
+    }
 }
 
 # Scheduled Tasks
@@ -259,7 +263,14 @@ app_include_css = [
 
 # Fixtures
 # --------
-# No fixtures needed for Barcode Print since it is a standard Print Format file
+fixtures = [
+    {
+        "dt": "Custom Field",
+        "filters": [
+            ["dt", "in", ["Purchase Invoice", "Purchase Invoice Item"]]
+        ]
+    }
+]
 
 # Override the main document refresh to include module header menu
 # override_whitelisted_methods = {
