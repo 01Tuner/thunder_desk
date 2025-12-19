@@ -65,10 +65,13 @@ def get_item_rate_history(item_code, customer):
     if not item_codes:
         return {}
     
+    
     placeholders = ', '.join(['%s'] * len(item_codes))
-    query = f"""
+    
+    # SALES HISTORY
+    sales_query = f"""
         select 
-            sii.item_code, si.posting_date, sii.rate, sii.qty, si.name as invoice_name
+            sii.item_code, si.posting_date, sii.rate, sii.qty, sii.amount, sii.uom, si.name as invoice_name
         from 
             `tabSales Invoice` si, `tabSales Invoice Item` sii
         where 
@@ -81,18 +84,51 @@ def get_item_rate_history(item_code, customer):
         limit 100
     """
     
-    params = [customer] + item_codes
-    results = frappe.db.sql(query, tuple(params), as_dict=1)
+    sales_params = [customer] + item_codes
+    sales_results = frappe.db.sql(sales_query, tuple(sales_params), as_dict=1)
     
-    # Group by item_code
-    grouped = {}
-    for r in results:
-        if r.item_code not in grouped:
-            grouped[r.item_code] = []
-        if len(grouped[r.item_code]) < 5: 
-            grouped[r.item_code].append(r)
+    sales_grouped = {}
+    for r in sales_results:
+        if r.item_code not in sales_grouped:
+            sales_grouped[r.item_code] = []
+        if len(sales_grouped[r.item_code]) < 5: 
+            sales_grouped[r.item_code].append(r)
+
+    # PURCHASE HISTORY
+    # Purchase history is not strictly tied to "Customer" usually, but often we want to see 
+    # what we bought these items for (Cost). So we ignore the "Customer" filter for Purchase, 
+    # or arguably we might want a "Supplier" filter but the requirement says 
+    # "in purchases tab purchae invoice history details". Usually for checking margins we want ANY purchase.
+    # So I will query ALL purchases for these items.
+    
+    purchase_query = f"""
+        select 
+            pii.item_code, pi.posting_date, pii.rate, pii.qty, pii.amount, pii.uom, pi.name as invoice_name
+        from 
+            `tabPurchase Invoice` pi, `tabPurchase Invoice Item` pii
+        where 
+            pi.name = pii.parent 
+            and pii.item_code IN ({placeholders})
+            and pi.docstatus = 1
+        order by 
+            pi.posting_date desc
+        limit 100
+    """
+    
+    purchase_params = item_codes
+    purchase_results = frappe.db.sql(purchase_query, tuple(purchase_params), as_dict=1)
+
+    purchase_grouped = {}
+    for r in purchase_results:
+        if r.item_code not in purchase_grouped:
+            purchase_grouped[r.item_code] = []
+        if len(purchase_grouped[r.item_code]) < 5: 
+            purchase_grouped[r.item_code].append(r)
             
-    return grouped
+    return {
+        "sales": sales_grouped,
+        "purchase": purchase_grouped
+    }
 
 # Alias for backward compatibility / cached clients
 get_items_rate_history = get_item_rate_history
