@@ -85,7 +85,8 @@ jinja = {
 # ------------
 
 # before_install = "thunder_desk.install.before_install"
-# after_install = "thunder_desk.install.after_install"
+after_install = "thunder_desk.install.after_install"
+after_migrate = "thunder_desk.custom.setup.setup_custom_fields"
 
 # Uninstallation
 # ------------

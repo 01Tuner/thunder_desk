@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import get_system_timezone
 
 def execute():
 	frappe.reload_doc("core", "doctype", "system_settings")
@@ -11,6 +12,13 @@ def execute():
 	system_settings = frappe.get_single("System Settings")
 	system_settings.float_precision = 2
 	system_settings.currency_precision = 2
+
+	if not system_settings.language:
+		system_settings.language = "en"
+
+	if not system_settings.time_zone:
+		system_settings.time_zone = get_system_timezone()
+
 	system_settings.save()
 
 	# Accounts Settings
