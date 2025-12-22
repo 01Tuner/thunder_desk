@@ -5,12 +5,13 @@
 
 
 frappe.ui.form.on('Item', {
+    manage_image: function (frm) {
+        toggle_image_section(frm);
+    },
     refresh: function (frm) {
-        // Only show if not standard sidebar is present (which is hidden by CSS, but good to check context if needed)
-        // Injecting into the dashboard or top of the form
-        if (!frm.custom_image_section) {
-            render_image_section(frm);
-        }
+        // Handle image section visibility
+        toggle_image_section(frm);
+
         update_image_preview(frm);
 
         // Bind real-time translation on input with debounce
@@ -35,6 +36,18 @@ frappe.ui.form.on('Item', {
     },
 });
 
+function toggle_image_section(frm) {
+    if (!frm.custom_image_section) {
+        render_image_section(frm);
+    }
+
+    if (frm.doc.manage_image) {
+        frm.custom_image_section.show();
+    } else {
+        frm.custom_image_section.hide();
+    }
+}
+
 function render_image_section(frm) {
     // Container for our custom section
     let $ref_element = (frm.dashboard && frm.dashboard.wrapper) ? frm.dashboard.wrapper : $();
@@ -48,30 +61,46 @@ function render_image_section(frm) {
         <div class="custom-image-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius); background: var(--card-bg);">
             <div class="row">
                 <div class="col-xs-12 col-sm-3">
-                    <div class="item-image-preview" style="
+                    <div class="item-image-container" style="
+                        position: relative;
                         width: 100%; 
                         height: 150px; 
-                        background-color: var(--bg-light-gray); 
                         border-radius: var(--border-radius); 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center;
                         overflow: hidden;
                         border: 1px dashed var(--border-color);">
-                        <i class="fa fa-image text-muted" style="font-size: 3rem;"></i>
-                        <img class="img-responsive" style="display: none; width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-9">
-                    <h5 class="uppercase">${__('Item Image')}</h5>
-                    <p class="text-muted small">${__('Upload or change the item image directly from here.')}</p>
-                    <div class="image-actions" style="margin-top: 10px;">
-                        <button class="btn btn-default btn-sm btn-upload-image">
-                            <i class="fa fa-upload"></i> ${__('Upload Image')}
-                        </button>
-                         <button class="btn btn-default btn-sm btn-remove-image" style="display: none;">
-                            <i class="fa fa-trash text-danger"></i> ${__('Remove')}
-                        </button>
+                        
+                        <div class="item-image-preview" style="
+                            width: 100%; 
+                            height: 100%; 
+                            background-color: var(--bg-light-gray); 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center;">
+                            <i class="fa fa-image text-muted" style="font-size: 3rem;"></i>
+                            <img class="img-responsive" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+
+                        <div class="image-overlay" style="
+                            position: absolute; 
+                            top: 0; 
+                            left: 0; 
+                            width: 100%; 
+                            height: 100%; 
+                            background: rgba(0,0,0,0.6); 
+                            display: flex; 
+                            flex-direction: column; 
+                            align-items: center; 
+                            justify-content: center; 
+                            opacity: 0; 
+                            transition: opacity 0.2s;
+                            cursor: pointer;">
+                            <button class="btn btn-default btn-xs btn-upload-image" style="margin-bottom: 5px;">
+                                <i class="fa fa-upload"></i> ${__('Upload')}
+                            </button>
+                             <button class="btn btn-danger btn-xs btn-remove-image" style="display: none;">
+                                <i class="fa fa-trash"></i> ${__('Remove')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,12 +109,20 @@ function render_image_section(frm) {
 
     frm.custom_image_section = $(section_html).insertBefore($(frm.wrapper).find('.form-layout').first());
 
+    // Hover effect
+    frm.custom_image_section.find('.item-image-container').hover(
+        function () { $(this).find('.image-overlay').css('opacity', 1); },
+        function () { $(this).find('.image-overlay').css('opacity', 0); }
+    );
+
     // Bind events
-    frm.custom_image_section.find('.btn-upload-image').on('click', function () {
+    frm.custom_image_section.find('.btn-upload-image').on('click', function (e) {
+        e.stopPropagation();
         upload_item_image(frm);
     });
 
-    frm.custom_image_section.find('.btn-remove-image').on('click', function () {
+    frm.custom_image_section.find('.btn-remove-image').on('click', function (e) {
+        e.stopPropagation();
         if (!frm.doc.image) return;
 
         frappe.confirm(__('Are you sure you want to remove the image?'), () => {
@@ -108,12 +145,12 @@ function update_image_preview(frm) {
         $img.attr('src', frm.doc.image).show();
         $placeholder.hide();
         $removeBtn.show();
-        $uploadBtn.html(`<i class="fa fa-pencil"></i> ${__('Change Image')}`);
+        $uploadBtn.html(`<i class="fa fa-pencil"></i> ${__('Change')}`);
     } else {
         $img.hide();
         $placeholder.show();
         $removeBtn.hide();
-        $uploadBtn.html(`<i class="fa fa-upload"></i> ${__('Upload Image')}`);
+        $uploadBtn.html(`<i class="fa fa-upload"></i> ${__('Upload')}`);
     }
 }
 

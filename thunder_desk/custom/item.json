@@ -1,0 +1,13 @@
+[
+    {
+        "doctype": "Custom Field",
+        "dt": "Item",
+        "fieldname": "manage_image",
+        "fieldtype": "Check",
+        "label": "Manage Image",
+        "insert_after": "item_name",
+        "description": "Enable to show the image management section",
+        "default": "0",
+        "is_system_generated": 0
+    }
+]

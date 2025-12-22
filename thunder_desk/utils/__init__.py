@@ -33,43 +33,14 @@ def before_request():
 @frappe.whitelist()
 def get_item_rate_history(item_code, customer):
     """
-    Get last 5 sales records. 
-    Supports single item_code or list of item_codes (bulk mode).
-    item_code: can be single item code string, or list of codes, or JSON string of list.
+    Get last 5 sales and purchase records for a single item.
+    item_code: single item code string.
     """
     if not item_code or not customer:
         return {}
     
-    item_codes = item_code
-    
-    # Check if input is list or needs parsing
-    if isinstance(item_codes, str):
-        import json
-        try:
-            # Try to parse as JSON list
-            possible_list = json.loads(item_codes)
-            if isinstance(possible_list, list):
-                item_codes = possible_list
-            else:
-                # It's a single item code string
-                item_codes = [item_codes]
-        except:
-            # Not JSON, so single item code
-            item_codes = [item_codes]
-    elif isinstance(item_codes, list):
-        pass # Already a list
-    else:
-        # Unknown type
-        return {}
-
-    if not item_codes:
-        return {}
-    
-    
-    placeholders = ', '.join(['%s'] * len(item_codes))
-    
     # SALES HISTORY
-    sales_query = f"""
+    sales_query = """
         select 
             sii.item_code, si.posting_date, sii.rate, sii.qty, sii.amount, sii.uom, si.name as invoice_name
         from 
@@ -77,53 +48,35 @@ def get_item_rate_history(item_code, customer):
         where 
             si.name = sii.parent 
             and si.customer = %s 
-            and sii.item_code IN ({placeholders})
+            and sii.item_code = %s
             and si.docstatus = 1
         order by 
             si.posting_date desc
-        limit 100
+        limit 5
     """
     
-    sales_params = [customer] + item_codes
-    sales_results = frappe.db.sql(sales_query, tuple(sales_params), as_dict=1)
+    sales_results = frappe.db.sql(sales_query, (customer, item_code), as_dict=1)
     
-    sales_grouped = {}
-    for r in sales_results:
-        if r.item_code not in sales_grouped:
-            sales_grouped[r.item_code] = []
-        if len(sales_grouped[r.item_code]) < 5: 
-            sales_grouped[r.item_code].append(r)
+    sales_grouped = {item_code: sales_results}
 
     # PURCHASE HISTORY
-    # Purchase history is not strictly tied to "Customer" usually, but often we want to see 
-    # what we bought these items for (Cost). So we ignore the "Customer" filter for Purchase, 
-    # or arguably we might want a "Supplier" filter but the requirement says 
-    # "in purchases tab purchae invoice history details". Usually for checking margins we want ANY purchase.
-    # So I will query ALL purchases for these items.
-    
-    purchase_query = f"""
+    purchase_query = """
         select 
-            pii.item_code, pi.posting_date, pii.rate, pii.qty, pii.amount, pii.uom, pi.name as invoice_name
+            pii.item_code, pi.posting_date, pii.rate, pii.qty, pii.amount, pii.uom, pi.name as invoice_name, pi.supplier
         from 
             `tabPurchase Invoice` pi, `tabPurchase Invoice Item` pii
         where 
             pi.name = pii.parent 
-            and pii.item_code IN ({placeholders})
+            and pii.item_code = %s
             and pi.docstatus = 1
         order by 
             pi.posting_date desc
-        limit 100
+        limit 5
     """
     
-    purchase_params = item_codes
-    purchase_results = frappe.db.sql(purchase_query, tuple(purchase_params), as_dict=1)
+    purchase_results = frappe.db.sql(purchase_query, (item_code,), as_dict=1)
 
-    purchase_grouped = {}
-    for r in purchase_results:
-        if r.item_code not in purchase_grouped:
-            purchase_grouped[r.item_code] = []
-        if len(purchase_grouped[r.item_code]) < 5: 
-            purchase_grouped[r.item_code].append(r)
+    purchase_grouped = {item_code: purchase_results}
             
     return {
         "sales": sales_grouped,
