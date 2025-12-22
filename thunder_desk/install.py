@@ -9,11 +9,11 @@ from thunder_desk.patches import (
 )
 
 # import custom purchase invoice  
-from thunder_desk.custom.purchase_invoice import custom_purchase_invoice
+from thunder_desk.custom.setup import setup_custom_fields
 
 def after_install():
 	zatca_prerequesties_system_config.execute()
 	thunder_desk_system_config.execute()
 	update_sar_currency_symbol.execute()
 	add_payment_modes.execute()
-	custom_purchase_invoice.execute()   
+	setup_custom_fields()   
