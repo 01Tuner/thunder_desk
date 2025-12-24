@@ -20,7 +20,7 @@ frappe.ui.form.on('Sales Invoice', {
 
                 // Check and insert button
                 if ($download_btn.length > 0 && $(grid.wrapper).find('.btn-bulk-history').length === 0) {
-                    let $btn = $(`<button class="btn btn-xs btn-default btn-bulk-history" style="margin-left: 5px;">
+                    let $btn = $(`<button type="button" class="btn btn-xs btn-default btn-bulk-history" style="margin-left: 5px;">
                         <i class="fa fa-history"></i> ${__('Item History')}
                     </button>`);
 
@@ -73,6 +73,8 @@ frappe.ui.form.on('Sales Invoice', {
                         }
                     }
                 });
+
+
             }
 
             // Add button on refresh
