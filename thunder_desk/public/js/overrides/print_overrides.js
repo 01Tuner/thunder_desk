@@ -4,7 +4,16 @@
 const overridePrintView = () => {
     if (frappe.ui && frappe.ui.form && frappe.ui.form.PrintView) {
         frappe.ui.form.PrintView.prototype.render_page = function (method, printit = false) {
-            if (method === "/printview?" && this.selected_format() !== "Standard" && !this.is_raw_printing()) {
+
+            // Logic:
+            // Check if the selected format has pdf_generator set to "PagedJS".
+            // If yes -> Thunder Print View.
+            // If no (or Standard) -> Standard Print View.
+
+            const use_pagedjs = this.get_print_format().pdf_generator === 'PagedJS';
+
+            // If PagedJS is selected and not raw printing, redirect to thunder_print_view
+            if (method === "/printview?" && use_pagedjs && !this.is_raw_printing()) {
                 method = "/thunder_print_view?";
             }
 
