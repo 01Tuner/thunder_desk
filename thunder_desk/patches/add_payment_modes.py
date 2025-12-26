@@ -71,7 +71,7 @@ def execute():
 		mode_doc = get_or_create_mode_of_payment(config)
 		accounts_updated = sync_mode_of_payment_accounts(mode_doc, companies, config["account"])
 
-		if accounts_updated or mode_doc.get_dirty_fields():
+		if accounts_updated or mode_doc.is_new() or mode_doc.flags.is_dirty:
 			mode_doc.save(ignore_permissions=True)
 
 
@@ -84,9 +84,17 @@ def get_or_create_mode_of_payment(config):
 		doc = frappe.new_doc("Mode of Payment")
 		doc.mode_of_payment = config["name"]
 
-	doc.enabled = 1
-	doc.type = config["type"]
-	doc.custom_zatca_payment_means_code = config["zatca_code"]
+	if doc.enabled != 1:
+		doc.enabled = 1
+		doc.flags.is_dirty = True
+
+	if doc.type != config["type"]:
+		doc.type = config["type"]
+		doc.flags.is_dirty = True
+
+	if doc.custom_zatca_payment_means_code != config["zatca_code"]:
+		doc.custom_zatca_payment_means_code = config["zatca_code"]
+		doc.flags.is_dirty = True
 
 	return doc
 
