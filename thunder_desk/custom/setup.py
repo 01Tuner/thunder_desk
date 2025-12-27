@@ -14,6 +14,12 @@ def setup_custom_fields():
     if os.path.exists(json_file):
         with open(json_file, "r") as f:
             fields = json.load(f)
+
+        # Filter out system fields that cause timestamp mismatches
+        for field in fields:
+            for key in ["modified", "creation", "modified_by", "owner", "docstatus", "name"]:
+                if key in field:
+                    del field[key]
             
         # Group fields by doctype
         fields_by_doctype = {}

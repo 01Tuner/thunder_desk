@@ -54,6 +54,9 @@ def execute():
 	frappe.reload_doc("accounts", "doctype", "mode_of_payment")
 	frappe.reload_doc("accounts", "doctype", "mode_of_payment_account")
 
+	if frappe.get_all("Mode of Payment", limit=1):
+		return
+
 	companies = frappe.get_all(
 		"Company",
 		fields=[
