@@ -79,13 +79,9 @@
     </style>
     {% if print_styles %}
     <!-- Dynamic Print Format Styles -->
-    <style>
-        {
-                {
-                print_styles | safe
-            }
-        }
-    </style>
+    {{tag}}
+    {{print_styles | safe}}
+    {{tag_close}}
     {% endif %}
 
 </head>

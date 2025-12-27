@@ -8,6 +8,9 @@ def get_context(context):
     name = frappe.form_dict.get('name')
     print_format = frappe.form_dict.get('print_format')
     
+    context.tag = '<style>'
+    context.tag_close = '</style>'
+    
     if doctype and name:
         doc = frappe.get_doc(doctype, name)
         meta = frappe.get_meta(doctype)
