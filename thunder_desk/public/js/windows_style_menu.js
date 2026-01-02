@@ -110,8 +110,8 @@ function getWindowsMenuHTML(menuStructure, isTabApp, isDesktopApp) {
                 <div class="windows-menu-bar">
                     ${getHomeButtonHTML(isTabApp, isDesktopApp)}
                     ${menuStructure
-						.map((menu) => getMenuItemHTML(menu, isTabApp, isDesktopApp))
-						.join("")}
+			.map((menu) => getMenuItemHTML(menu, isTabApp, isDesktopApp))
+			.join("")}
                 </div>
             </div>
         </div>
@@ -178,13 +178,13 @@ function getERPNextMenuStructure() {
 	const allModules = [
 		{
 			name: "Customer",
-			title: __("Customer Management"),
+			title: __("Partners & Contacts"),
 			icon: "fa fa-users",
 			color: "#3498db",
 			submenus: [
 				{ label: __("Customer"), doctype: "Customer", icon: "fa fa-user" },
+				{ label: __("Supplier"), doctype: "Supplier", icon: "fa fa-truck" },
 				{ label: __("Customer Group"), doctype: "Customer Group", icon: "fa fa-users" },
-				{ label: __("Territory"), doctype: "Territory", icon: "fa fa-map-marker" },
 				{ label: __("Address"), doctype: "Address", icon: "fa fa-home" },
 				{ label: __("Contact"), doctype: "Contact", icon: "fa fa-phone" },
 			],
@@ -208,11 +208,15 @@ function getERPNextMenuStructure() {
 			icon: "fa fa-shopping-bag",
 			color: "#e74c3c",
 			submenus: [
-				{ label: __("Supplier"), doctype: "Supplier", icon: "fa fa-truck" },
 				{
 					label: __("Request for Quotation"),
 					doctype: "Request for Quotation",
 					icon: "fa fa-file-o",
+				},
+				{
+					label: __("Supplier Quotation"),
+					doctype: "Supplier Quotation",
+					icon: "fa fa-file-text-o",
 				},
 				{
 					label: __("Purchase Order"),
@@ -449,15 +453,15 @@ function setupWindowsMenuHandlers() {
 		});
 		$("#windows-style-menu").addClass("windows-menu-loading");
 
-        if (route && route === "/app/point-of-sale") {
-            window.location.href = route;
-        }
+		if (route && route === "/app/point-of-sale") {
+			window.location.href = route;
+		}
 
 		setTimeout(() => {
 			const setRoute =
 				isTabApp && window.opener ? window.opener.frappe.set_route : frappe.set_route;
 			if (route) {
-					setRoute(route);
+				setRoute(route);
 			} else if (doctype) {
 				setRoute("List", doctype);
 			}

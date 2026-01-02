@@ -84,13 +84,13 @@ def get_modules():
     return [
         {
             "name": "Customer",
-            "title": _("Customer Management"),
+            "title": _("Partners & Contacts"),
             "icon": "fa fa-users",
             "color": "#3498db",
             "items": [
                 {"label": _("Customer"), "doctype": "Customer", "icon": "fa fa-user"},
+                {"label": _("Supplier"), "doctype": "Supplier", "icon": "fa fa-truck"},
                 {"label": _("Customer Group"), "doctype": "Customer Group", "icon": "fa fa-users"},
-                {"label": _("Territory"), "doctype": "Territory", "icon": "fa fa-map-marker"},
                 {"label": _("Address"), "doctype": "Address", "icon": "fa fa-home"},
                 {"label": _("Contact"), "doctype": "Contact", "icon": "fa fa-phone"},
             ]
@@ -114,8 +114,8 @@ def get_modules():
             "icon": "fa fa-shopping-bag",
             "color": "#e74c3c",
             "items": [
-                {"label": _("Supplier"), "doctype": "Supplier", "icon": "fa fa-truck"},
                 {"label": _("Request for Quotation"), "doctype": "Request for Quotation", "icon": "fa fa-file-o"},
+                {"label": _("Supplier Quotation"), "doctype": "Supplier Quotation", "icon": "fa fa-file-text-o"},
                 {"label": _("Purchase Order"), "doctype": "Purchase Order", "icon": "fa fa-file-text"},
                 {"label": _("Purchase Invoice"), "doctype": "Purchase Invoice", "icon": "fa fa-dollar"},
                 {"label": _("Purchase Receipt"), "doctype": "Purchase Receipt", "icon": "fa fa-inbox"},
