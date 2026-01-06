@@ -259,7 +259,7 @@ app_include_js = [
 
 app_include_css = [
     "/assets/thunder_desk/css/windows_style_menu.css",
-    "/assets/thunder_desk/css/global_no_sidebar.css",
+    # "/assets/thunder_desk/css/global_no_sidebar.css",
     # "/assets/thunder_desk/css/modern_theme.css"
 ]
 
