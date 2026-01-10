@@ -152,6 +152,15 @@ doc_events = {
 	},
     "Purchase Invoice": {
         "on_submit": "thunder_desk.api.update_item_selling_price"
+    },
+    "Item": {
+        "validate": "thunder_desk.api.validate_allowed_companies"
+    },
+    "Customer": {
+        "validate": "thunder_desk.api.validate_allowed_companies"
+    },
+    "Supplier": {
+        "validate": "thunder_desk.api.validate_allowed_companies"
     }
 }
 
@@ -255,6 +264,8 @@ doc_events = {
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [
     "/assets/thunder_desk/js/windows_style_menu.js",
+    "/assets/thunder_desk/js/company_switcher.js",
+    "/assets/thunder_desk/js/global_company_filter.js"
 ]
 
 app_include_css = [

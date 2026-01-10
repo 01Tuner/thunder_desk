@@ -1,6 +1,7 @@
 
 import frappe
 import requests
+from frappe.desk.search import search_link as standard_search_link
 
 @frappe.whitelist()
 def get_arabic_translation(text):
@@ -78,3 +79,90 @@ def update_price_list_rate(item_code, item_name, price_list, rate, currency, sel
 			"currency": currency
 		})
 		ip.insert(ignore_permissions=True)
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def get_records_for_company(doctype, txt, searchfield, start, page_len, filters):
+    if not frappe.db.exists("DocType", doctype):
+        return []
+
+    if isinstance(filters, str):
+        import json
+        filters = json.loads(filters)
+    
+    company = filters.pop("company", None)
+    conditions = []
+    values = {"txt": f"%{txt}%"}
+    
+    # 1. Search text filter (General)
+    if txt:
+        if doctype == "Item":
+            conditions.append("(`tabItem`.`item_code` LIKE %(txt)s OR `tabItem`.`item_name` LIKE %(txt)s)")
+        else:
+            conditions.append(f"(`tab{doctype}`.`{searchfield}` LIKE %(txt)s)")
+
+    # 2. Multi-company isolation filter
+    if company:
+        conditions.append(f"""(
+            NOT EXISTS (SELECT name FROM `tabAllowed Company` WHERE parent = `tab{doctype}`.name AND parenttype = '{doctype}')
+            OR 
+            EXISTS (SELECT name FROM `tabAllowed Company` WHERE parent = `tab{doctype}`.name AND parenttype = '{doctype}' AND company = %(company)s)
+        )""")
+        values["company"] = company
+
+    # 3. Standard Item conditions (mimic erpnext.controllers.queries.item_query)
+    if doctype == "Item":
+        conditions.append("`tabItem`.disabled = 0")
+        conditions.append("`tabItem`.has_variants = 0")
+        conditions.append("`tabItem`.docstatus < 2")
+        conditions.append("(`tabItem`.end_of_life > %(today)s OR IFNULL(`tabItem`.end_of_life, '0000-00-00') = '0000-00-00')")
+        values["today"] = frappe.utils.nowdate()
+        
+    # 4. Standard Filters Condition (get_filters_cond)
+    from frappe.desk.reportview import get_filters_cond, get_match_cond
+    fcond = get_filters_cond(doctype, filters, [])
+    
+    # 5. Match Condition (Permissions)
+    mcond = get_match_cond(doctype)
+    
+    where_clause = " AND ".join(conditions) if conditions else "1=1"
+    
+    # Determine fields to return based on doctype
+    if doctype == "Item":
+        select_fields = "`name`, `item_name`, `item_group`"
+    elif doctype == "Customer":
+        select_fields = "`name`, `customer_name`"
+    elif doctype == "Supplier":
+        select_fields = "`name`, `supplier_name`"
+    else:
+        select_fields = "`name`"
+    
+    return frappe.db.sql(f"""
+        SELECT DISTINCT {select_fields}
+        FROM `tab{doctype}`
+        WHERE {where_clause} {fcond} {mcond}
+        ORDER BY 
+            CASE WHEN `tab{doctype}`.`{searchfield}` LIKE %(txt)s THEN 0 ELSE 1 END,
+            `modified` DESC
+        LIMIT %(start)s, %(page_len)s
+    """, {**values, "start": start, "page_len": page_len})
+
+@frappe.whitelist()
+def set_session_company(company):
+    frappe.defaults.set_user_default("company", company)
+    return True
+
+def validate_allowed_companies(doc, method=None):
+    """
+    Prevent duplicate companies in Allowed Company table.
+    """
+    if not doc.get("allowed_companies"):
+        return
+        
+    companies = []
+    for row in doc.allowed_companies:
+        if row.company in companies:
+            frappe.throw(
+                frappe._("Company {0} is already added in the list").format(row.company),
+                title=frappe._("Duplicate Entry")
+            )
+        companies.append(row.company)

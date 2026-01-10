@@ -1,0 +1,29 @@
+[
+    {
+        "dt": "Customer",
+        "fieldname": "allowed_companies",
+        "fieldtype": "Table",
+        "label": "Link to Companies",
+        "options": "Allowed Company",
+        "insert_after": "image",
+        "description": "If linked, this Customer is only visible to the selected Companies. If empty, it's visible to all."
+    },
+    {
+        "dt": "Supplier",
+        "fieldname": "allowed_companies",
+        "fieldtype": "Table",
+        "label": "Link to Companies",
+        "options": "Allowed Company",
+        "insert_after": "image",
+        "description": "If linked, this Supplier is only visible to the selected Companies. If empty, it's visible to all."
+    },
+    {
+        "dt": "Item",
+        "fieldname": "allowed_companies",
+        "fieldtype": "Table",
+        "label": "Link to Companies",
+        "options": "Allowed Company",
+        "insert_after": "image",
+        "description": "If linked, this Item is only visible to the selected Companies. If empty, it's visible to all."
+    }
+]
