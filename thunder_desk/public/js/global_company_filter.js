@@ -1,5 +1,5 @@
 $(document).on('app_ready', function () {
-    // Monkey-patch to catch all form setups globally
+    // 1. Monkey-patch to catch all form setups globally
     const original_setup = frappe.ui.form.ScriptManager.prototype.setup;
     frappe.ui.form.ScriptManager.prototype.setup = function () {
         original_setup.apply(this, arguments);
@@ -13,7 +13,150 @@ $(document).on('app_ready', function () {
             apply_allowed_companies_filters(frm);
         }
     };
+
+    // We listen to route changes to robustly apply the filter to any List view
+    frappe.router.on('change', () => {
+        const route = frappe.get_route();
+        if (route[0] === 'List' && route[1]) {
+            const doctype = route[1];
+
+            // Wait for list to be ready
+            frappe.model.with_doctype(doctype, function () {
+                const company = frappe.defaults.get_user_default("company");
+                if (!company) {
+                    return;
+                }
+
+                const meta = frappe.get_meta(doctype);
+                if (!meta) return;
+
+                // Determine filter strategy
+                let use_standard_company = meta.fields.some(f => f.fieldname === 'company');
+                let use_allowed_companies = ['Customer', 'Supplier', 'Item'].includes(doctype) &&
+                    meta.fields.some(f => f.fieldname === 'allowed_companies');
+
+                // If no relevant fields, exit
+                if (!use_standard_company && !use_allowed_companies) return;
+
+                // Check for forced switch flag
+                const forced_switch = localStorage.getItem('company_switched_flag');
+                if (forced_switch) {
+                    localStorage.removeItem('company_switched_flag');
+                }
+
+                // Slight delay to ensure cur_list is active and filter_area ready
+                setTimeout(() => {
+                    if (window.cur_list && cur_list.doctype === doctype) {
+
+                        // STRATEGY A: Standard 'company' field
+                        if (use_standard_company) {
+                            // 1. Check for Standard Filter (Dropdown in the list header)
+                            if (cur_list.page && cur_list.page.fields_dict && cur_list.page.fields_dict['company']) {
+                                const company_field = cur_list.page.fields_dict['company'];
+                                const actual_val = company_field.get_value();
+
+                                if (forced_switch || actual_val !== company) {
+                                    company_field.set_value(company);
+                                }
+                                return; // Done, standard filter takes precedence
+                            }
+
+                            // 2. Check Filter Area
+                            apply_list_filter(cur_list, 'company', company, forced_switch);
+                        }
+
+                        // STRATEGY B: 'allowed_companies' child table
+                        else if (use_allowed_companies) {
+                            // Fieldname in filter list for child table is usually [ChildDocType, ChildField]
+                            // We want: ['Allowed Company', 'company', 'in', [session_company]]
+                            // User requested 'in' operator to help with global items (query backend likely handles this)
+                            apply_list_filter(cur_list, ['Allowed Company', 'company'], company, forced_switch, 'in');
+                        }
+                    }
+                }, 500);
+            });
+        }
+    });
 });
+
+function apply_list_filter(list_view, field_def, value, force_remove, operator = '=') {
+    if (!list_view.filter_area) return;
+
+    const filter_list = list_view.filter_area.filter_list;
+    let filter_exists = false;
+
+    // Determine how to verify the field name
+    const match_filter = (f) => {
+        if (Array.isArray(field_def)) {
+            return f.doctype === field_def[0] && f.fieldname === field_def[1];
+        } else {
+            return f.fieldname === field_def;
+        }
+    };
+
+    if (filter_list && filter_list.filters) {
+        // Iterate backwards to safely remove items
+        for (let i = filter_list.filters.length - 1; i >= 0; i--) {
+            let f = filter_list.filters[i];
+
+            if (match_filter(f)) {
+                let current_val = f.value;
+                if (typeof f.get_value === 'function') {
+                    current_val = f.get_value();
+                }
+
+                // Handle complex values or arrays
+                let val_to_check = current_val;
+                if (Array.isArray(current_val) && current_val.length > 1) {
+                    // standard filter value array might be [op, val] or [val]
+                    // If operator is 'in', val is likely an array inside?
+                    // Let's simplify: check if it conceptually matches
+                }
+
+                // Simply check if we should remove it
+                // Logic: remove if forced OR value doesn't match
+                // For 'in', exact match is tricky if arrays are different objects
+                // We'll rely on string comparison just for simplicity or force_remove logic
+
+                let matches = false;
+                if (operator === 'in') {
+                    // Expect value to be in current_val array? Or current_val to be equal to [value]?
+                    // User said "value current company". We will use [company].
+                    // Assume strict match of the array content if possible, or just primary value
+                    if (Array.isArray(current_val) && current_val.includes(value)) matches = true;
+                    // Also support if current_val is the string itself (legacy equal treated as in?)
+                    if (current_val === value) matches = true;
+                } else {
+                    if (current_val === value) matches = true;
+                }
+
+                if (force_remove || !matches) {
+                    // Found a stale or mismatched filter, remove it
+                    f.remove();
+                } else {
+                    filter_exists = true;
+                }
+            }
+        }
+    }
+
+    if (!filter_exists) {
+        // Apply default filter
+        let final_val = value;
+        if (operator === 'in' && !Array.isArray(value)) {
+            final_val = [value];
+        }
+
+        let filter_obj;
+        if (Array.isArray(field_def)) {
+            filter_obj = [field_def[0], field_def[1], operator, final_val];
+        } else {
+            filter_obj = [list_view.doctype, field_def, operator, final_val];
+        }
+
+        list_view.filter_area.add([filter_obj]);
+    }
+}
 
 function apply_global_company_filters(frm) {
 

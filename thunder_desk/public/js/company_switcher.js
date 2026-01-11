@@ -49,6 +49,10 @@ frappe.ui.company_switcher = {
             callback: (r) => {
                 if (r.message) {
                     frappe.show_alert({ message: __("Switched to {0}", [company]), indicator: "green" });
+
+                    // Set flag to force filter update on next load
+                    localStorage.setItem('company_switched_flag', '1');
+
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);
