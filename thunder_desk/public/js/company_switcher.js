@@ -55,7 +55,7 @@ frappe.ui.company_switcher = {
                     cur_list.filter_area.clear();
 
                     setTimeout(() => {
-                        window.location.reload();
+                        window.location.href = window.location.origin + window.location.pathname
                     }, 500);
                 }
             }
