@@ -70,7 +70,7 @@ $(document).on('app_ready', function () {
                             // Fieldname in filter list for child table is usually [ChildDocType, ChildField]
                             // We want: ['Allowed Company', 'company', 'in', [session_company]]
                             // User requested 'in' operator to help with global items (query backend likely handles this)
-                            apply_list_filter(cur_list, ['Allowed Company', 'company'], company, forced_switch, 'in');
+                            apply_list_filter(cur_list, ['Allowed Company', 'company'], company + ', ', forced_switch, 'in');
                         }
                     }
                 }, 500);

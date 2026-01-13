@@ -52,6 +52,7 @@ frappe.ui.company_switcher = {
 
                     // Set flag to force filter update on next load
                     localStorage.setItem('company_switched_flag', '1');
+                    cur_list.filter_area.clear();
 
                     setTimeout(() => {
                         window.location.reload();
