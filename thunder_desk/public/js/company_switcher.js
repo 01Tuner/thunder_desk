@@ -3,6 +3,14 @@ frappe.provide("frappe.ui.company_switcher");
 frappe.ui.company_switcher = {
     render: function () {
         if (this.rendering) return;
+
+        // 0. Check for Multi-Company Setup
+        // We only want to show the switcher if there are multiple companies.
+        const company_count = frappe.boot.thunder_desk ? frappe.boot.thunder_desk?.company_count : 0;
+        if ((company_count || 1) <= 1) {
+            return;
+        }
+
         this.rendering = true;
 
         // Remove any existing company switcher

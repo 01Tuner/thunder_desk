@@ -6,7 +6,9 @@
         "label": "Link to Companies",
         "options": "Allowed Company",
         "insert_after": "image",
-        "description": "If linked, this Customer is only visible to the selected Companies. If empty, it's visible to all."
+        "description": "If linked, this Customer is only visible to the selected Companies. If empty, it's visible to all.",
+        "depends_on": "eval:frappe.boot.thunder_desk.company_count > 1",
+        "hidden": 0
     },
     {
         "dt": "Supplier",
@@ -15,7 +17,9 @@
         "label": "Link to Companies",
         "options": "Allowed Company",
         "insert_after": "image",
-        "description": "If linked, this Supplier is only visible to the selected Companies. If empty, it's visible to all."
+        "description": "If linked, this Supplier is only visible to the selected Companies. If empty, it's visible to all.",
+        "depends_on": "eval:frappe.boot.thunder_desk.company_count > 1",
+        "hidden": 0
     },
     {
         "dt": "Item",
@@ -24,6 +28,8 @@
         "label": "Link to Companies",
         "options": "Allowed Company",
         "insert_after": "image",
-        "description": "If linked, this Item is only visible to the selected Companies. If empty, it's visible to all."
+        "description": "If linked, this Item is only visible to the selected Companies. If empty, it's visible to all.",
+        "depends_on": "eval:frappe.boot.thunder_desk.company_count > 1",
+        "hidden": 0
     }
 ]

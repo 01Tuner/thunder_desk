@@ -1,4 +1,16 @@
 $(document).on('app_ready', function () {
+    // 0. Check for Multi-Company Setup
+    // We only want to enforce strict company filtering if there are multiple companies.
+    // Ensure you have added `extend_bootinfo` in hooks.py to inject `thunder_desk.company_count`.
+    const company_count = frappe.boot.thunder_desk ? frappe.boot.thunder_desk?.company_count : 0;
+
+    // If we can't determine count (0 or undefined), or if it's <= 1, strictly speaking we don't *need* isolation.
+    // However, if the user explicitly wants "only if multiple", we return here.
+    // Defaulting to 1 if undefined is safer to avoid breaking single company setups if hook is missing.
+    if ((company_count || 1) <= 1) {
+        return;
+    }
+
     // 1. Monkey-patch to catch all form setups globally
     const original_setup = frappe.ui.form.ScriptManager.prototype.setup;
     frappe.ui.form.ScriptManager.prototype.setup = function () {
@@ -242,13 +254,21 @@ function apply_allowed_companies_filters(frm) {
         });
     }
 
+    frappe.ui.form.on(frm.doctype, {
+        refresh: function (frm) {
+            if (frm.is_new() && (!frm.doc.allowed_companies || frm.doc.allowed_companies.length === 0)) {
+                let row = frm.add_child('allowed_companies');
+                row.company = frappe.defaults.get_user_default("company");
+                frm.refresh_field('allowed_companies');
+            }
+        }
+    });
+
     // Default the company when adding a row to Allowed Company table
     frappe.ui.form.on('Allowed Company', {
         allowed_companies_add: function (frm, cdt, cdn) {
             let child = locals[cdt][cdn];
-            if (Object.keys(locals[cdt]).length === 1 && child.__islocal && child.__unedited && child.__unsaved) {
-                frappe.model.set_value(cdt, cdn, 'company', frappe.defaults.get_user_default("company"));
-            } else {
+            if (child.__islocal && child.__unedited && child.__unsaved) {
                 frappe.model.set_value(cdt, cdn, 'company', '');
             }
         },

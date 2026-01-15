@@ -141,7 +141,7 @@ function render_reports_page(page) {
 			initial_items: [
 				// { name: "Tax Withholding Details", label: "Tax Withholding Details", icon: "fa fa-file-text-o" },
 				// { name: "TDS Computation Summary", label: "TDS Computation", icon: "fa fa-calculator" },
-				{ name: "VAT Payable Report", label: "KSA VAT Report", icon: "fa fa-file-text" },
+				{ name: "KSA VAT Payable Report", label: "KSA VAT Report", icon: "fa fa-file-text" },
 				// {name: "Item Wise Sales Register", label: "Sales Register", icon: "fa fa-file-text"}
 			],
 			more_items: [],

@@ -154,13 +154,16 @@ doc_events = {
         "on_submit": "thunder_desk.api.update_item_selling_price"
     },
     "Item": {
-        "validate": "thunder_desk.api.validate_allowed_companies"
+        "validate": "thunder_desk.api.validate_allowed_companies",
+        "before_insert": "thunder_desk.api.set_default_allowed_company"
     },
     "Customer": {
-        "validate": "thunder_desk.api.validate_allowed_companies"
+        "validate": "thunder_desk.api.validate_allowed_companies",
+        "before_insert": "thunder_desk.api.set_default_allowed_company"
     },
     "Supplier": {
-        "validate": "thunder_desk.api.validate_allowed_companies"
+        "validate": "thunder_desk.api.validate_allowed_companies",
+        "before_insert": "thunder_desk.api.set_default_allowed_company"
     }
 }
 
@@ -260,6 +263,8 @@ doc_events = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+extend_bootinfo = "thunder_desk.api.boot_session"
 
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [

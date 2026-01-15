@@ -166,3 +166,36 @@ def validate_allowed_companies(doc, method=None):
                 title=frappe._("Duplicate Entry")
             )
         companies.append(row.company)
+
+def set_default_allowed_company(doc, method=None):
+    """
+    Sets default session company for Quick Entry or non-form access.
+    Logic:
+    - If doc already has companies, do nothing.
+    - If 'allowed_companies' was explicitly submitted (even empty), do nothing (User intentionally made it global).
+    - Otherwise (Quick Entry, API missing field), default to session company.
+    """
+    if hasattr(frappe, "request") and frappe.request:
+        # Frappe automatically parses the payload into frappe.form_dict
+        action = frappe.form_dict.get("action")
+        if action:
+            return
+            
+    if doc.get("allowed_companies"):
+        return
+
+    # If the user didn't explicitly submit this field (missing from payload),
+    # we assume they are in Quick Entry or an Import where they want smart defaults.
+    if frappe.db.count("Company") > 1:
+        company = frappe.defaults.get_user_default("company")
+        if company:
+            doc.append("allowed_companies", {"company": company})
+
+
+def boot_session(bootinfo):
+    """
+    Extend bootinfo with Thunder Desk specific data.
+    """
+    bootinfo.thunder_desk = {
+        "company_count": frappe.db.count("Company")
+    }
