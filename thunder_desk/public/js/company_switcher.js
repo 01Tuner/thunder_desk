@@ -33,9 +33,7 @@ frappe.ui.company_switcher = {
                 args: {
                     doctype: "Company",
                     fields: ["name"],
-                    filters: {
-                        is_group: 0
-                    }
+                    order_by: "is_group desc, name asc"
                 },
                 callback: (r) => {
                     resolve(r.message || []);
@@ -60,7 +58,7 @@ frappe.ui.company_switcher = {
 
                     // Set flag to force filter update on next load
                     localStorage.setItem('company_switched_flag', '1');
-                    cur_list.filter_area.clear();
+                    cur_list?.filter_area?.clear();
 
                     setTimeout(() => {
                         window.location.href = window.location.origin + window.location.pathname
@@ -81,7 +79,7 @@ frappe.ui.company_switcher = {
                    onclick="return false;"
                    style="padding: 0.5rem 1rem; display: flex; align-items: center;">
                     <i class="fa fa-building" style="margin-right: 5px;"></i>
-                    <span class="company-name" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    <span class="company-name" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         ${current_company}
                     </span>
                 </a>
