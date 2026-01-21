@@ -10,3 +10,4 @@ def execute():
 		"value": "wkhtmltopdf\nPagedJS",
 		"is_system_generated": 0
 	})
+	print("PagedJS option added to Print Format")
