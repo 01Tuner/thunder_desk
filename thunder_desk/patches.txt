@@ -9,3 +9,4 @@ thunder_desk.patches.thunder_desk_system_config
 thunder_desk.patches.update_sar_currency_symbol
 thunder_desk.patches.add_payment_modes
 thunder_desk.patches.add_pagedjs_option
+thunder_desk.patches.set_thunder_print_defaults
