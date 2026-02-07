@@ -268,13 +268,13 @@ extend_bootinfo = "thunder_desk.api.boot_session"
 
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [
-    "/assets/thunder_desk/js/windows_style_menu.js",
+    "/assets/thunder_desk/js/thunder_desk_loader.js",
     "/assets/thunder_desk/js/company_switcher.js",
     "/assets/thunder_desk/js/global_company_filter.js"
 ]
 
 app_include_css = [
-    "/assets/thunder_desk/css/windows_style_menu.css",
+    # "/assets/thunder_desk/css/windows_style_menu.css",
     # "/assets/thunder_desk/css/global_no_sidebar.css",
     # "/assets/thunder_desk/css/modern_theme.css"
 ]
