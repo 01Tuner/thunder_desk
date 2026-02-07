@@ -17,5 +17,59 @@
             }
         ],
         "permissions": []
+    },
+    {
+        "name": "Thunder Desk Settings",
+        "doctype": "DocType",
+        "module": "Thunder Desk",
+        "custom": 1,
+        "issingle": 1,
+        "permissions": [
+            {
+                "role": "System Manager"
+            }
+        ],
+        "fields": [
+            {
+                "label": "Layout Settings",
+                "fieldname": "layout_settings_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Enable Top Menu",
+                "fieldname": "enable_top_menu",
+                "fieldtype": "Check",
+                "default": 1
+            },
+            {
+                "label": "Hide Side Bar",
+                "fieldname": "hide_side_bar",
+                "fieldtype": "Check",
+                "default": 0
+            },
+            {
+                "label": "Multi Company Settings",
+                "fieldname": "multi_company_settings_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Customer - Set active company as default",
+                "fieldname": "customer_default_company",
+                "fieldtype": "Check",
+                "default": 1
+            },
+            {
+                "label": "Supplier - Set active company as default",
+                "fieldname": "supplier_default_company",
+                "fieldtype": "Check",
+                "default": 1
+            },
+            {
+                "label": "Item - Set active company as default",
+                "fieldname": "item_default_company",
+                "fieldtype": "Check",
+                "default": 1
+            }
+        ]
     }
 ]

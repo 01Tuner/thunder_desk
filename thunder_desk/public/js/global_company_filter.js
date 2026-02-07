@@ -256,7 +256,19 @@ function apply_allowed_companies_filters(frm) {
 
     frappe.ui.form.on(frm.doctype, {
         refresh: function (frm) {
-            if (frm.is_new() && (!frm.doc.allowed_companies || frm.doc.allowed_companies.length === 0)) {
+            // Check settings before applying default
+            const settings = frappe.boot.thunder_desk?.settings || {};
+            let should_set_default = false;
+
+            if (frm.doctype === 'Customer' && settings.customer_default_company) {
+                should_set_default = true;
+            } else if (frm.doctype === 'Supplier' && settings.supplier_default_company) {
+                should_set_default = true;
+            } else if (frm.doctype === 'Item' && settings.item_default_company) {
+                should_set_default = true;
+            }
+
+            if (should_set_default && frm.is_new() && (!frm.doc.allowed_companies || frm.doc.allowed_companies.length === 0)) {
                 let row = frm.add_child('allowed_companies');
                 row.company = frappe.defaults.get_user_default("company");
                 frm.refresh_field('allowed_companies');

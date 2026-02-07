@@ -186,6 +186,20 @@ def set_default_allowed_company(doc, method=None):
 
     # If the user didn't explicitly submit this field (missing from payload),
     # we assume they are in Quick Entry or an Import where they want smart defaults.
+    # Check Thunder Desk Settings before applying default
+    settings = frappe.get_single("Thunder Desk Settings")
+    
+    should_set_default = False
+    if doc.doctype == "Customer" and settings.customer_default_company:
+        should_set_default = True
+    elif doc.doctype == "Supplier" and settings.supplier_default_company:
+        should_set_default = True
+    elif doc.doctype == "Item" and settings.item_default_company:
+        should_set_default = True
+        
+    if not should_set_default:
+        return
+
     if frappe.db.count("Company") > 1:
         company = frappe.defaults.get_user_default("company")
         if company:
@@ -197,5 +211,6 @@ def boot_session(bootinfo):
     Extend bootinfo with Thunder Desk specific data.
     """
     bootinfo.thunder_desk = {
-        "company_count": frappe.db.count("Company")
+        "company_count": frappe.db.count("Company"),
+        "settings": frappe.get_single("Thunder Desk Settings")
     }
