@@ -2,6 +2,7 @@
 import frappe
 import requests
 from frappe.desk.search import search_link as standard_search_link
+from frappe.utils import unique
 
 @frappe.whitelist()
 def get_arabic_translation(text):
@@ -90,15 +91,39 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
         filters = json.loads(filters)
     
     company = filters.pop("company", None)
+    
+    meta = frappe.get_meta(doctype)
+    if not searchfield:
+        searchfield = meta.title_field or "name"
+    
+    search_fields = meta.get_search_fields() or []
+    if "name" not in search_fields:
+        search_fields.append("name")
+        
+    if searchfield and searchfield not in search_fields:
+        search_fields.append(searchfield)
+
+    if doctype == "Item":
+        for f in ["item_code", "item_name", "item_group"]:
+            if f not in search_fields:
+                search_fields.append(f)
+
     conditions = []
-    values = {"txt": f"%{txt}%"}
+    values = {"txt": f"%{txt}%", "_txt": txt.replace("%", "")}
     
     # 1. Search text filter (General)
     if txt:
+        or_conditions = []
+        for field in search_fields:
+            or_conditions.append(f"`tab{doctype}`.`{field}` LIKE %(txt)s")
+            
         if doctype == "Item":
-            conditions.append("(`tabItem`.`item_code` LIKE %(txt)s OR `tabItem`.`item_name` LIKE %(txt)s)")
-        else:
-            conditions.append(f"(`tab{doctype}`.`{searchfield}` LIKE %(txt)s)")
+             or_conditions.append("`tabItem`.item_code IN (select parent from `tabItem Barcode` where barcode LIKE %(txt)s)")
+             if frappe.db.count(doctype, cache=True) < 50000:
+                 or_conditions.append("`tabItem`.description LIKE %(txt)s")
+
+        if or_conditions:
+            conditions.append(f"({' OR '.join(or_conditions)})")
 
     # 2. Multi-company isolation filter
     if company:
@@ -127,22 +152,74 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
     where_clause = " AND ".join(conditions) if conditions else "1=1"
     
     # Determine fields to return based on doctype
-    if doctype == "Item":
-        select_fields = "`name`, `item_name`, `item_group`"
-    elif doctype == "Customer":
-        select_fields = "`name`, `customer_name`"
-    elif doctype == "Supplier":
-        select_fields = "`name`, `supplier_name`"
-    else:
-        select_fields = "`name`"
+    select_columns = ["name"]
     
+    if doctype == "Item":
+        select_columns.extend(["item_name", "item_group"])
+    elif doctype == "Customer":
+        select_columns.append("customer_name")
+    elif doctype == "Supplier":
+        select_columns.append("supplier_name")
+        
+    if searchfield and searchfield not in select_columns:
+        select_columns.append(searchfield)
+
+    # Include any extra search_fields configured in DocType metadata (e.g. valuation_rate)
+    # This mirrors item_query's "extra_searchfields" logic
+    extra_fields = [
+        f for f in (meta.get_search_fields() or [])
+        if f not in select_columns and f != "description"
+    ]
+    select_columns.extend(extra_fields)
+        
+    select_fields = ", ".join([f"`{f}`" for f in select_columns])
+    
+    order_by_clause = ""
+    if txt:
+        # Prioritize matches in name, then searchfield, then others if possible (but simpler is better)
+        order_by_clause += f"""
+            (CASE WHEN LOCATE(%(_txt)s, `tab{doctype}`.name) > 0 THEN LOCATE(%(_txt)s, `tab{doctype}`.name) ELSE 99999 END),
+        """
+        if searchfield and searchfield != "name":
+             order_by_clause += f"""
+                (CASE WHEN LOCATE(%(_txt)s, `tab{doctype}`.`{searchfield}`) > 0 THEN LOCATE(%(_txt)s, `tab{doctype}`.`{searchfield}`) ELSE 99999 END),
+            """
+    
+    order_by_clause += f"`tab{doctype}`.`modified` DESC"
+
+    if doctype == "Item":
+        qualified_select = ", ".join([f"`tabItem`.`{f}`" for f in select_columns])
+        
+        show_qty = frappe.db.get_single_value("Thunder Desk Settings", "show_item_qty_in_search")
+        
+        if show_qty:
+            # LEFT JOIN tabBin to show total available qty across all warehouses.
+            # Must use GROUP BY instead of DISTINCT when using aggregate functions.
+            return frappe.db.sql(f"""
+                SELECT {qualified_select},
+                    CONCAT('| Qty: ', IFNULL(ROUND(SUM(`tabBin`.actual_qty), 2), 0)) AS item_info
+                FROM `tabItem`
+                LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name
+                WHERE {where_clause} {fcond} {mcond}
+                GROUP BY `tabItem`.name
+                ORDER BY {order_by_clause}
+                LIMIT %(start)s, %(page_len)s
+            """, {**values, "start": start, "page_len": page_len})
+
+        # Qty not enabled - simple query
+        return frappe.db.sql(f"""
+            SELECT DISTINCT {qualified_select}
+            FROM `tabItem`
+            WHERE {where_clause} {fcond} {mcond}
+            ORDER BY {order_by_clause}
+            LIMIT %(start)s, %(page_len)s
+        """, {**values, "start": start, "page_len": page_len})
+
     return frappe.db.sql(f"""
         SELECT DISTINCT {select_fields}
         FROM `tab{doctype}`
         WHERE {where_clause} {fcond} {mcond}
-        ORDER BY 
-            CASE WHEN `tab{doctype}`.`{searchfield}` LIKE %(txt)s THEN 0 ELSE 1 END,
-            `modified` DESC
+        ORDER BY {order_by_clause}
         LIMIT %(start)s, %(page_len)s
     """, {**values, "start": start, "page_len": page_len})
 

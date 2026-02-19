@@ -69,6 +69,18 @@
                 "fieldname": "item_default_company",
                 "fieldtype": "Check",
                 "default": 1
+            },
+            {
+                "label": "Item Search Settings",
+                "fieldname": "item_search_settings_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Show Available Qty in Item Search",
+                "fieldname": "show_item_qty_in_search",
+                "fieldtype": "Check",
+                "default": 0,
+                "description": "When enabled, shows the available stock quantity next to each item in search dropdowns."
             }
         ]
     }
