@@ -193,13 +193,23 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
         show_qty = frappe.db.get_single_value("Thunder Desk Settings", "show_item_qty_in_search")
         
         if show_qty:
-            # LEFT JOIN tabBin to show total available qty across all warehouses.
+            # LEFT JOIN tabBin and then tabWarehouse to show qty
+            # only from active warehouses belonging to the selected company.
             # Must use GROUP BY instead of DISTINCT when using aggregate functions.
+            if company:
+                values["company_for_wh"] = company
+                bin_join = """LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name
+                LEFT JOIN `tabWarehouse` ON `tabWarehouse`.name = `tabBin`.warehouse
+                    AND `tabWarehouse`.company = %(company_for_wh)s
+                    AND `tabWarehouse`.disabled = 0"""
+            else:
+                bin_join = "LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name"
+
             return frappe.db.sql(f"""
                 SELECT {qualified_select},
                     CONCAT('| Qty: ', IFNULL(ROUND(SUM(`tabBin`.actual_qty), 2), 0)) AS item_info
                 FROM `tabItem`
-                LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name
+                {bin_join}
                 WHERE {where_clause} {fcond} {mcond}
                 GROUP BY `tabItem`.name
                 ORDER BY {order_by_clause}
