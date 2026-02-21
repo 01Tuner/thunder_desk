@@ -199,9 +199,10 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
             if company:
                 values["company_for_wh"] = company
                 bin_join = """LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name
-                LEFT JOIN `tabWarehouse` ON `tabWarehouse`.name = `tabBin`.warehouse
-                    AND `tabWarehouse`.company = %(company_for_wh)s
-                    AND `tabWarehouse`.disabled = 0"""
+                    AND `tabBin`.warehouse IN (
+                        SELECT name FROM `tabWarehouse` 
+                        WHERE company = %(company_for_wh)s AND disabled = 0
+                    )"""
             else:
                 bin_join = "LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name"
 
