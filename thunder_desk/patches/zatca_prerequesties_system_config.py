@@ -39,3 +39,9 @@ def execute():
 	global_defaults = frappe.get_single("Global Defaults")
 	global_defaults.disable_rounded_total = 1
 	global_defaults.save()
+
+	# Stock Settings
+	frappe.reload_doc("stock", "doctype", "stock_settings")
+	stock_settings = frappe.get_single("Stock Settings")
+	stock_settings.valuation_method = "Moving Average"
+	stock_settings.save()
