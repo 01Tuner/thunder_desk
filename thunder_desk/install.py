@@ -6,7 +6,8 @@ from thunder_desk.patches import (
 	thunder_desk_system_config,
 	update_sar_currency_symbol,
 	add_payment_modes,
-	add_pagedjs_option
+	add_pagedjs_option,
+	add_print_headings
 )
 
 # import custom purchase invoice  
@@ -19,3 +20,4 @@ def after_install():
 	update_sar_currency_symbol.execute()
 	setup_custom_fields()   
 	add_payment_modes.execute()
+	add_print_headings.execute()

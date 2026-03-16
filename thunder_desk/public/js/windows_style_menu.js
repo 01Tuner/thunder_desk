@@ -305,6 +305,58 @@ function getERPNextMenuStructure() {
 			],
 		},
 		{
+			name: "Accounting",
+			title: __("Accounting"),
+			icon: "fa fa-calculator",
+			color: "#1abc9c",
+			submenus: [
+				{
+					label: __("Chart of Accounts"),
+					route: "/app/account",
+					icon: "fa fa-sitemap",
+				},
+				{
+					label: __("General Ledger"),
+					route: "/app/query-report/General%20Ledger",
+					report_name: "General Ledger",
+					icon: "fa fa-book",
+				},
+				{
+					label: __("Trial Balance"),
+					route: "/app/query-report/Trial%20Balance",
+					report_name: "Trial Balance",
+					icon: "fa fa-balance-scale",
+				},
+				{
+					label: __("Journal Entry"),
+					doctype: "Journal Entry",
+					icon: "fa fa-pencil-square-o",
+				},
+				{
+					label: __("Payment Reconciliation"),
+					doctype: "Payment Reconciliation",
+					icon: "fa fa-check-circle",
+				},
+				{
+					label: __("Bank Reconciliation"),
+					route: "/app/bank-reconciliation-tool",
+					icon: "fa fa-university",
+				},
+				{
+					label: __("Accounts Payable"),
+					route: "/app/query-report/Accounts%20Payable",
+					report_name: "Accounts Payable",
+					icon: "fa fa-arrow-circle-left",
+				},
+				{
+					label: __("Accounts Receivable"),
+					route: "/app/query-report/Accounts%20Receivable",
+					report_name: "Accounts Receivable",
+					icon: "fa fa-arrow-circle-right",
+				},
+			],
+		},
+		{
 			name: "Setup",
 			title: __("Settings & Setup"),
 			icon: "fa fa-cog",

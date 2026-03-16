@@ -17,7 +17,7 @@ PAYMENT_MODES = [
 		"type": "Bank",
 		"zatca_code": "42",
 		"account": {
-			"account_name": "Bank",
+			"account_name": "Primary Bank",
 			"account_type": "Bank",
 			"root_type": "Asset",
 			"default_account_field": "default_bank_account",
@@ -28,7 +28,7 @@ PAYMENT_MODES = [
 		"type": "General",
 		"zatca_code": "48",
 		"account": {
-			"account_name": "Card",
+			"account_name": "Primary Bank",
 			"account_type": "Bank",
 			"root_type": "Asset",
 			"default_account_field": "default_bank_account",
@@ -39,7 +39,7 @@ PAYMENT_MODES = [
 		"type": "Bank",
 		"zatca_code": "20",
 		"account": {
-			"account_name": "Cheque",
+			"account_name": "Primary Bank",
 			"account_type": "Bank",
 			"root_type": "Asset",
 			"default_account_field": "default_bank_account",
@@ -69,6 +69,17 @@ def execute():
 
 	if not companies:
 		return
+
+	for company in companies:
+		# Create Primary Bank account first
+		primary_bank_config = {
+			"account_name": "Primary Bank",
+			"account_type": "Bank",
+			"root_type": "Asset",
+		}
+		get_or_create_account(company, primary_bank_config)
+
+	setup_default_bank_account(companies)
 
 	for config in PAYMENT_MODES:
 		mode_doc = get_or_create_mode_of_payment(config)
@@ -176,7 +187,15 @@ def get_parent_account(company, account_config):
 	default_parent_source = account_config.get("default_account_field")
 	parent_account = None
 
-	if default_parent_source:
+	# If it's a bank account, try to find the "Bank Accounts" group first
+	if account_config.get("account_type") == "Bank":
+		parent_account = frappe.db.get_value(
+			"Account",
+			{"company": company["name"], "account_name": "Bank Accounts", "is_group": 1},
+			"name",
+		)
+
+	if not parent_account and default_parent_source:
 		default_account = company.get(default_parent_source)
 
 		if default_account:
@@ -206,3 +225,71 @@ def get_first_group_account(company_name, root_type, report_type):
 
 	return result[0].name if result else None
 
+
+def setup_default_bank_account(companies):
+	bank_name = get_or_create_bank()
+
+	for company in companies:
+		# Find the Primary Bank GL account for this company
+		bank_account_gl = frappe.db.get_value(
+			"Account",
+			{
+				"company": company["name"],
+				"account_name": "Primary Bank",
+				"account_type": "Bank",
+				"is_group": 0,
+			},
+			"name",
+		)
+
+		if not bank_account_gl:
+			continue
+
+		# Check if "Primary Bank" Bank Account already exists
+		existing = frappe.db.get_value(
+			"Bank Account",
+			{"account_name": "Primary Bank", "company": company["name"]},
+			"name",
+		)
+
+		if existing:
+			bank_account_name = existing
+		else:
+			ba_doc = frappe.get_doc(
+				{
+					"doctype": "Bank Account",
+					"account_name": "Primary Bank",
+					"company": company["name"],
+					"bank": bank_name,
+					"account": bank_account_gl,
+					"is_default": 1,
+					"is_company_account": 1,
+				}
+			)
+			ba_doc.insert(ignore_permissions=True)
+			bank_account_name = ba_doc.name
+
+		# Ensure is_default is set
+		if not frappe.db.get_value("Bank Account", bank_account_name, "is_default"):
+			frappe.db.set_value("Bank Account", bank_account_name, "is_default", 1)
+
+		# Set as the company default_bank_account if not already set
+		if not company.get("default_bank_account"):
+			frappe.db.set_value(
+				"Company", company["name"], "default_bank_account", bank_account_gl
+			)
+
+
+def get_or_create_bank():
+	bank_name = "Primary Bank"
+	if not frappe.db.exists("Bank", bank_name):
+		doc = frappe.get_doc(
+			{
+				"doctype": "Bank",
+				"bank_name": bank_name,
+			}
+		)
+		doc.insert(ignore_permissions=True)
+		return doc.name
+
+	return bank_name
