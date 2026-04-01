@@ -3,7 +3,51 @@
 
 frappe.provide("frappe.ui.windows_menu");
 
-// Initialization hooks
+// ─── Hard-refresh / first-load bootstrap ─────────────────────────────────────
+// On a full page reload (e.g. F5 on /app/print) Frappe's SPA events never
+// fire.  We poll until frappe.boot is ready, then initialize the menu.
+$(document).ready(function () {
+	let attempts = 0;
+	const maxAttempts = 40; // 40 × 250 ms = 10 s max
+
+	function tryInit() {
+		attempts++;
+		// frappe.boot signals that Frappe has finished its bootstrap
+		if (typeof frappe !== "undefined" && frappe.boot && frappe.boot.user) {
+			initializeWindowsStyleMenu();
+			// One extra attempt after a short delay for late-rendering pages
+			setTimeout(initializeWindowsStyleMenu, 600);
+		} else if (attempts < maxAttempts) {
+			setTimeout(tryInit, 250);
+		}
+	}
+
+	tryInit();
+
+	// MutationObserver: catches the case where .navbar is injected into the
+	// DOM *after* frappe.boot is already set (common in print / popup views).
+	const observer = new MutationObserver(function (mutations) {
+		for (const mutation of mutations) {
+			for (const node of mutation.addedNodes) {
+				if (
+					node.nodeType === 1 &&
+					(node.classList.contains("navbar") ||
+						(node.querySelector && node.querySelector(".navbar")))
+				) {
+					setTimeout(initializeWindowsStyleMenu, 100);
+					observer.disconnect();
+					return;
+				}
+			}
+		}
+	});
+	observer.observe(document.body || document.documentElement, {
+		childList: true,
+		subtree: true,
+	});
+});
+
+// ─── SPA navigation hooks ─────────────────────────────────────────────────────
 frappe.ui.form.on("Main", {
 	refresh: function () {
 		setTimeout(initializeWindowsStyleMenu, 100);
@@ -15,10 +59,19 @@ frappe.ui.form.on("Main", {
 
 $(document).on("page-change", function () {
 	setTimeout(initializeWindowsStyleMenu, 150);
+	setTimeout(initializeWindowsStyleMenu, 800);
 });
 
 $(document).on("app_ready", function () {
 	setTimeout(initializeWindowsStyleMenu, 300);
+	setTimeout(initializeWindowsStyleMenu, 1000);
+
+	if (typeof frappe !== "undefined" && frappe.router) {
+		frappe.router.on("change", function () {
+			setTimeout(initializeWindowsStyleMenu, 300);
+			setTimeout(initializeWindowsStyleMenu, 800);
+		});
+	}
 });
 
 $(window).on("focus", function () {
