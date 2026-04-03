@@ -23,11 +23,27 @@
         };
     </script>
     <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+    <!-- Expose margin values as CSS custom properties and JS global -->
+    <style>
+        :root {
+            --page-margin-top: {{ page_margin_top or 0 }}px;
+            --page-margin-bottom: {{ page_margin_bottom or 0 }}px;
+        }
+    </style>
+    <script>
+        window.thunderPrintMargins = {
+            top: {{ page_margin_top or 0 }},
+            bottom: {{ page_margin_bottom or 0 }}
+        };
+    </script>
     <style>
         @page {
-            /* size: A4; */
-            /* Increased margins to accommodate 150px header/footer (~40mm) */
-            margin: 50mm;
+            size: A4;
+            {% if page_margin_top or page_margin_bottom %}
+                margin: {{ page_margin_top or 10 }}px 30px {{ page_margin_bottom or 10 }}px 30px;
+            {% else %}
+                margin: 10px 30px;
+            {% endif %}
 
             @top-center {
                 content: element(header);
@@ -50,30 +66,18 @@
 
         .page-header {
             position: running(header);
-            height: 150px;
+            height: {{ page_margin_top }}px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid #ccc;
-            padding: 0 20px;
-            font-size: 14px;
-            color: #444;
-            background-color: #fcfcfc;
-            /* For visibility */
         }
 
         .page-footer {
             position: running(footer);
-            height: 150px;
+            height: {{ page_margin_bottom }}px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-top: 2px solid #ccc;
-            padding: 0 20px;
-            font-size: 12px;
-            color: #777;
-            background-color: #fcfcfc;
-            display: block;
         }
 
         .page-content {
@@ -97,5 +101,9 @@
         {% endif %}
     </div>
 </body>
-
+<style> 
+    .no-letter-head {
+        height: 20px;
+    }
+</style>
 </html>
