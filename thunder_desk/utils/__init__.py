@@ -31,31 +31,34 @@ def before_request():
 
 
 @frappe.whitelist()
-def get_item_rate_history(item_code, customer):
+def get_item_rate_history(item_code, customer=None):
     """
     Get last 5 sales and purchase records for a single item.
     item_code: single item code string.
     """
-    if not item_code or not customer:
+    if not item_code:
         return {}
     
     # SALES HISTORY
-    sales_query = """
+    customer_condition = "and si.customer = %s" if customer else ""
+    sales_query = f"""
         select 
-            sii.item_code, si.posting_date, sii.rate, sii.qty, sii.amount, sii.uom, si.name as invoice_name
+            sii.item_code, si.posting_date, sii.rate, sii.qty, sii.amount, sii.uom, si.name as invoice_name, si.customer
         from 
             `tabSales Invoice` si, `tabSales Invoice Item` sii
         where 
             si.name = sii.parent 
-            and si.customer = %s 
+            {customer_condition}
             and sii.item_code = %s
             and si.docstatus = 1
+            and si.is_return is false
         order by 
             si.posting_date desc
         limit 5
     """
     
-    sales_results = frappe.db.sql(sales_query, (customer, item_code), as_dict=1)
+    query_args = (customer, item_code) if customer else (item_code,)
+    sales_results = frappe.db.sql(sales_query, query_args, as_dict=1)
     
     sales_grouped = {item_code: sales_results}
 
@@ -69,6 +72,7 @@ def get_item_rate_history(item_code, customer):
             pi.name = pii.parent 
             and pii.item_code = %s
             and pi.docstatus = 1
+            and pi.is_return is false
         order by 
             pi.posting_date desc
         limit 5

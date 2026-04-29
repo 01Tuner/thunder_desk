@@ -173,10 +173,10 @@ frappe.ui.form.on('Sales Invoice', {
                         </div>
                         <div class="tab-content">
                             <div class="tab-pane active" id="hist-sales">
-                                ${render_tab_content(sales_rows, 'Sales')}
+                                ${render_tab_content(sales_rows, 'Sales', dialog.get_value('customer'))}
                             </div>
                             <div class="tab-pane" id="hist-purchase" style="display: none;">
-                                ${render_tab_content(purchase_rows, 'Purchase')}
+                                ${render_tab_content(purchase_rows, 'Purchase', dialog.get_value('customer'))}
                             </div>
                         </div>
                     </div>
@@ -201,16 +201,19 @@ frappe.ui.form.on('Sales Invoice', {
                 });
             };
 
-            const render_tab_content = (rows, type) => {
+            const render_tab_content = (rows, type, customer_filter) => {
                 if (!rows || rows.length === 0) {
                     return `<div class="text-muted text-center" style="padding: 20px;">${__('No history found.')}</div>`;
                 }
 
                 let display_title = item_name ? `${item_code}: ${item_name}` : item_code;
                 let is_purchase = type === 'Purchase';
+                let is_sales = type === 'Sales';
+                let show_customer = is_sales && !customer_filter;
 
                 // Headers
                 let supplier_th = is_purchase ? `<th>${__("Supplier")}</th>` : '';
+                let customer_th = show_customer ? `<th>${__("Customer")}</th>` : '';
 
                 return `
                     <div class="item-history-block" style="margin-bottom: 20px;">
@@ -220,6 +223,7 @@ frappe.ui.form.on('Sales Invoice', {
                                 <tr class="grid-heading-row">
                                     <th>${__("Invoice")}</th>
                                     ${supplier_th}
+                                    ${customer_th}
                                     <th class="text-right">${__("Qty")}</th>
                                     <th>${__("UOM")}</th>
                                     <th class="text-right">${__("Rate")}</th>
@@ -235,11 +239,13 @@ frappe.ui.form.on('Sales Invoice', {
                     let link = type === 'Sales' ? `/app/sales-invoice/${row.invoice_name}` : `/app/purchase-invoice/${row.invoice_name}`;
 
                     let supplier_td = is_purchase ? `<td>${row.supplier || ''}</td>` : '';
+                    let customer_td = show_customer ? `<td>${row.customer || ''}</td>` : '';
 
                     return `
                                         <tr>
                                             <td><a href="${link}" target="_blank">${row.invoice_name}</a></td>
                                             ${supplier_td}
+                                            ${customer_td}
                                             <td class="text-right">${row.qty}</td>
                                             <td>${row.uom || ''}</td>
                                             <td class="text-right">${rate}</td>

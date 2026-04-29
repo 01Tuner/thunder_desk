@@ -365,7 +365,7 @@ function getERPNextMenuStructure() {
 			submenus: [
 				{
 					label: __("Chart of Accounts"),
-					route: "/app/account",
+					route: "/app/account/view/tree",
 					icon: "fa fa-sitemap",
 				},
 				{
