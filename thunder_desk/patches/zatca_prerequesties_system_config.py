@@ -42,6 +42,9 @@ def execute():
 
 	# Stock Settings
 	frappe.reload_doc("stock", "doctype", "stock_settings")
-	stock_settings = frappe.get_single("Stock Settings")
-	stock_settings.valuation_method = "Moving Average"
-	stock_settings.save()
+	try:
+		stock_settings = frappe.get_single("Stock Settings")
+		stock_settings.valuation_method = "Moving Average"
+		stock_settings.save()
+	except Exception:
+		pass
