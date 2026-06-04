@@ -26,7 +26,11 @@ frappe.ui.form.on('Sales Invoice', {
 
                     $btn.on('click', function (e) {
                         e.preventDefault();
-
+                        if(!frm.doc.company) {
+                            frappe.msgprint(__('Please select a Company first.'));
+                            return;
+                        }
+                        
                         // Use the globally stored active item
                         if (frm.active_item_payload && frm.active_item_payload.item_code) {
                             frm.events.show_item_history(frm.active_item_payload.item_code, frm.active_item_payload.item_name);
@@ -113,7 +117,8 @@ frappe.ui.form.on('Sales Invoice', {
                     method: "thunder_desk.utils.get_item_rate_history",
                     args: {
                         item_code: item_code, // Single item code
-                        customer: customer
+                        customer: customer,
+                        company: frm.doc.company
                     },
                     callback: function (r) {
                         if (r.message) {
