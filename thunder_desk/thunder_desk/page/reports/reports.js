@@ -103,7 +103,9 @@ function render_reports_page(page) {
 				{ name: "Accounts Payable Summary", label: "AP Summary", icon: "fa fa-file-o" },
 				{ name: "Payment Ledger", label: "Payment Ledger", icon: "fa fa-credit-card" },
 				{ name: "Gross and Net Profit Report", label: "Gross & Net Profit", icon: "fa fa-line-chart" },
-				{ name: "Financial Ratios", label: "Financial Ratios", icon: "fa fa-percent" }
+				{ name: "Financial Ratios", label: "Financial Ratios", icon: "fa fa-percent" },
+				{ name: "Cash and Bank Summary", label: "Cash and Bank Summary", icon: "fa fa-balance-scale" },
+				{ name: "Day Book", label: "Day Book", icon: "fa fa-book" }
 			],
 			has_more_items: true
 		},

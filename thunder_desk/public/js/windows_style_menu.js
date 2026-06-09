@@ -355,6 +355,18 @@ function getERPNextMenuStructure() {
 					report_name: "POS Register",
 					icon: "fa fa-book",
 				},
+				{
+					label: __("Cash and Bank Summary"),
+					route: "/app/query-report/Cash%20and%20Bank%20Summary",
+					report_name: "Cash and Bank Summary",
+					icon: "fa fa-balance-scale",
+				},
+				{
+					label: __("Day Book"),
+					route: "/app/query-report/Day%20Book",
+					report_name: "Day Book",
+					icon: "fa fa-book",
+				},
 			],
 		},
 		{
