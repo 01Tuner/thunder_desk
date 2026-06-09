@@ -74,6 +74,7 @@ function render_reports_page(page) {
 				{ name: "Stock Ageing", label: "Stock Ageing", icon: "fa fa-clock-o" }
 			],
 			more_items: [
+				{ name: "Negative Stock Balance", label: "Negative Stock Balance", icon: "fa fa-cubes" },
 				{ name: "Stock Projected Qty", label: "Stock Projected Qty", icon: "fa fa-calculator" },
 				{ name: "Warehouse-wise Stock Balance", label: "Warehouse Stock Balance", icon: "fa fa-building" },
 				{ name: "Item-wise Reorder Level", label: "Reorder Level", icon: "fa fa-exclamation-triangle" },
