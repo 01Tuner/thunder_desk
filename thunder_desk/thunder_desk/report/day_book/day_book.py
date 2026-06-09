@@ -139,6 +139,17 @@ def get_data(filters):
 	if not gl_entries:
 		return []
 
+	# Fetch Payment Entry payment_type for display mapping
+	payment_entry_names = {e.voucher_no for e in gl_entries if e.voucher_type == "Payment Entry"}
+	payment_entry_types = {}
+	if payment_entry_names:
+		pe_data = frappe.get_all(
+			"Payment Entry",
+			filters={"name": ["in", list(payment_entry_names)]},
+			fields=["name", "payment_type"]
+		)
+		payment_entry_types = {d.name: d.payment_type for d in pe_data}
+
 	# Group by voucher
 	vouchers = {}
 	for entry in gl_entries:
@@ -152,12 +163,16 @@ def get_data(filters):
 	for key, entries in vouchers.items():
 		posting_date, voucher_type, voucher_no = key
 		
-		# Calculate total voucher debit
-		voucher_debit = sum(flt(e.debit) for e in entries)
-		voucher_credit = sum(flt(e.credit) for e in entries)
+		# Calculate voucher debit/credit based on transaction type
+		voucher_debit, voucher_credit = get_voucher_debit_credit(entries, voucher_type)
 		
 		# Tally Prime particulars logic
 		particulars = get_voucher_particulars(entries)
+		
+		# Get payment entry type if applicable
+		pe_type = None
+		if voucher_type == "Payment Entry":
+			pe_type = payment_entry_types.get(voucher_no)
 		
 		parent_row_id = f"{voucher_type}-{voucher_no}"
 		
@@ -173,6 +188,7 @@ def get_data(filters):
 			"indent": 0,
 			"row_id": parent_row_id,
 			"parent_row_id": None,
+			"payment_entry_type": pe_type,
 		}
 		data.append(parent_row)
 		
@@ -192,6 +208,7 @@ def get_data(filters):
 				"indent": 1,
 				"row_id": f"{parent_row_id}-{idx}",
 				"parent_row_id": parent_row_id,
+				"payment_entry_type": pe_type,
 			}
 			data.append(child_row)
 
@@ -210,3 +227,58 @@ def get_voucher_particulars(entries):
 			
 	# 3. Default to the first account name
 	return entries[0].account if entries else ""
+
+
+def get_voucher_debit_credit(entries, voucher_type):
+	# Calculate total debit and credit of the voucher
+	total_debit = sum(flt(e.debit) for e in entries)
+	total_credit = sum(flt(e.credit) for e in entries)
+	amount = max(total_debit, total_credit)
+	
+	if voucher_type == "Sales Invoice":
+		return amount, 0.0
+	elif voucher_type == "Purchase Invoice":
+		return 0.0, amount
+	elif voucher_type in ("Delivery Note", "Stock Entry"):
+		return amount, 0.0
+	elif voucher_type in ("Purchase Receipt", "Stock Reconciliation"):
+		return amount, 0.0
+	elif voucher_type in ("Payment Entry", "Journal Entry"):
+		# Check if any entry has a party:
+		has_customer = False
+		has_supplier = False
+		customer_credit = 0.0
+		supplier_debit = 0.0
+		
+		for e in entries:
+			if e.party_type == "Customer":
+				has_customer = True
+				customer_credit += flt(e.credit)
+			elif e.party_type == "Supplier":
+				has_supplier = True
+				supplier_debit += flt(e.debit)
+				
+		if has_customer and customer_credit > 0:
+			return amount, 0.0
+		elif has_supplier and supplier_debit > 0:
+			return 0.0, amount
+			
+		# Check Cash/Bank accounts
+		accounts_in_entries = [e.account for e in entries]
+		cash_bank_accounts = frappe.get_all(
+			"Account",
+			filters={"name": ["in", accounts_in_entries], "account_type": ["in", ["Cash", "Bank"]]},
+			fields=["name"]
+		)
+		cash_bank_names = {a.name for a in cash_bank_accounts}
+		
+		if cash_bank_names:
+			cb_debit = sum(flt(e.debit) for e in entries if e.account in cash_bank_names)
+			cb_credit = sum(flt(e.credit) for e in entries if e.account in cash_bank_names)
+			
+			if cb_debit > cb_credit:
+				return amount, 0.0
+			elif cb_credit > cb_debit:
+				return 0.0, amount
+				
+	return amount, 0.0

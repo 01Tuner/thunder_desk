@@ -127,6 +127,20 @@ frappe.query_reports["Day Book"] = {
 	name_field: "row_id",
 	parent_field: "parent_row_id",
 	initial_depth: 0,
+	formatter: function (value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (column.fieldname === "voucher_type" && data && data.voucher_type === "Payment Entry" && value && typeof value === "string") {
+			if (data.payment_entry_type === "Receive") {
+				value = value.replace(/Payment Entry/g, __("Receipt"));
+			} else if (data.payment_entry_type === "Pay") {
+				value = value.replace(/Payment Entry/g, __("Payment"));
+			} else if (data.payment_entry_type === "Internal Transfer") {
+				value = value.replace(/Payment Entry/g, __("Contra"));
+			}
+		}
+
+		return value;
+	},
 	after_datatable_render: function (datatable_obj) {
 		if (datatable_obj && datatable_obj.columnmanager && !datatable_obj.columnmanager.applyFilter._wrapped) {
 			const original_applyFilter = datatable_obj.columnmanager.applyFilter;
