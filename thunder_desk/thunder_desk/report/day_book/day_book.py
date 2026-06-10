@@ -124,13 +124,16 @@ def get_data(filters):
 
 	gl_entries = frappe.db.sql(
 		f"""
-		select posting_date, voucher_type, voucher_no, account, party_type, party, against, debit, credit, remarks
-		from `tabGL Entry`
-		where company = %s
-		  and posting_date between %s and %s
-		  and is_cancelled = 0
-		  {conditions}
-		order by posting_date, voucher_type, voucher_no, name
+		select gle.posting_date, gle.voucher_type, gle.voucher_no, gle.account, 
+		gle.party_type, gle.party, gle.against, gle.debit, gle.credit, gle.remarks,
+		acc.account_type
+		from `tabGL Entry` gle
+		left join `tabAccount` acc on gle.account = acc.name
+		where gle.company = %s
+		  and gle.posting_date between %s and %s
+		  and gle.is_cancelled = 0
+		  {conditions.replace('voucher_type', 'gle.voucher_type')}
+		order by gle.posting_date, gle.voucher_type, gle.voucher_no, gle.name
 		""",
 		tuple(params),
 		as_dict=True,
@@ -164,7 +167,7 @@ def get_data(filters):
 		posting_date, voucher_type, voucher_no = key
 		
 		# Calculate voucher debit/credit based on transaction type
-		voucher_debit, voucher_credit = get_voucher_debit_credit(entries, voucher_type)
+		voucher_debit, voucher_credit = get_voucher_debit_credit(entries, voucher_type, voucher_no)
 		
 		# Tally Prime particulars logic
 		particulars = get_voucher_particulars(entries)
@@ -229,19 +232,30 @@ def get_voucher_particulars(entries):
 	return entries[0].account if entries else ""
 
 
-def get_voucher_debit_credit(entries, voucher_type):
+def get_voucher_debit_credit(entries, voucher_type, voucher_no):
+	if voucher_type == "Sales Invoice":
+		filtered_entries = [e for e in entries if e.get("account_type") not in ("Stock", "Cost of Goods Sold", "Stock Adjustment")]
+		amount = max(sum(flt(e.debit) for e in filtered_entries), sum(flt(e.credit) for e in filtered_entries))
+		return amount, 0.0
+	elif voucher_type == "Purchase Invoice":
+		filtered_entries = [e for e in entries if e.get("account_type") not in ("Stock", "Stock Received But Not Billed", "Stock Adjustment")]
+		amount = max(sum(flt(e.debit) for e in filtered_entries), sum(flt(e.credit) for e in filtered_entries))
+		return 0.0, amount
+
 	# Calculate total debit and credit of the voucher
 	total_debit = sum(flt(e.debit) for e in entries)
 	total_credit = sum(flt(e.credit) for e in entries)
 	amount = max(total_debit, total_credit)
 	
-	if voucher_type == "Sales Invoice":
+	if voucher_type == "Delivery Note":
+		doc_amount = frappe.db.get_value("Delivery Note", voucher_no, "base_grand_total")
+		return flt(doc_amount) or amount, 0.0
+	elif voucher_type == "Purchase Receipt":
+		doc_amount = frappe.db.get_value("Purchase Receipt", voucher_no, "base_grand_total")
+		return 0.0, flt(doc_amount) or amount
+	elif voucher_type == "Stock Entry":
 		return amount, 0.0
-	elif voucher_type == "Purchase Invoice":
-		return 0.0, amount
-	elif voucher_type in ("Delivery Note", "Stock Entry"):
-		return amount, 0.0
-	elif voucher_type in ("Purchase Receipt", "Stock Reconciliation"):
+	elif voucher_type == "Stock Reconciliation":
 		return amount, 0.0
 	elif voucher_type in ("Payment Entry", "Journal Entry"):
 		# Check if any entry has a party:
