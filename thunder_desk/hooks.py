@@ -270,7 +270,8 @@ extend_bootinfo = "thunder_desk.api.boot_session"
 app_include_js = [
     "/assets/thunder_desk/js/thunder_desk_loader.js",
     "/assets/thunder_desk/js/company_switcher.js",
-    "/assets/thunder_desk/js/global_company_filter.js"
+    "/assets/thunder_desk/js/global_company_filter.js",
+    "/assets/thunder_desk/js/global_report_auto_print.js"
 ]
 
 app_include_css = [
