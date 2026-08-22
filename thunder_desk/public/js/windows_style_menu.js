@@ -3,6 +3,22 @@
 
 frappe.provide("frappe.ui.windows_menu");
 
+function td_render_menu_icon(name, size, color) {
+	const icon = name || "folder-normal";
+	const colorStyle = color
+		? `color: ${frappe.utils.escape_html(color)}; --icon-stroke: ${frappe.utils.escape_html(color)};`
+		: "";
+	if (String(icon).includes("fa-") || String(icon).startsWith("fa ")) {
+		return `<i class="${frappe.utils.escape_html(icon)}"${
+			colorStyle ? ` style="${colorStyle}"` : ""
+		}></i>`;
+	}
+	return `<span class="td-menu-icon" style="display:inline-flex;align-items:center;${colorStyle}">${frappe.utils.icon(
+		frappe.utils.escape_html(icon),
+		size || "sm"
+	)}</span>`;
+}
+
 // ─── Hard-refresh / first-load bootstrap ─────────────────────────────────────
 // On a full page reload (e.g. F5 on /app/print) Frappe's SPA events never
 // fire.  We poll until frappe.boot is ready, then initialize the menu.
@@ -101,6 +117,7 @@ function initializeWindowsStyleMenu() {
 
 	hideTraditionalERPNextHeader(isTabApp, isDesktopApp);
 
+	applyWindowsMenuAppearance();
 	const menuStructure = getERPNextMenuStructure();
 	const windowsMenuHTML = getWindowsMenuHTML(menuStructure, isTabApp, isDesktopApp);
 
@@ -112,6 +129,15 @@ function initializeWindowsStyleMenu() {
 
 	setupWindowsMenuHandlers();
 	addContextSpecificStyling(isTabApp, isDesktopApp);
+}
+
+function applyWindowsMenuAppearance() {
+	const settings = (frappe.boot && frappe.boot.thunder_desk && frappe.boot.thunder_desk.settings) || {};
+	const root = document.documentElement;
+	root.style.setProperty("--td-wsm-bg", settings.wsm_light_bg || "#f0f0f0");
+	root.style.setProperty("--td-wsm-hover-bg", settings.wsm_light_hover_bg || "#e1e1e1");
+	root.style.setProperty("--td-wsm-bg-dark", settings.wsm_dark_bg || "#2d2d2d");
+	root.style.setProperty("--td-wsm-hover-bg-dark", settings.wsm_dark_hover_bg || "#3d3d3d");
 }
 
 function refreshMenuIfNeeded() {
@@ -180,44 +206,66 @@ function getHomeButtonHTML(isTabApp, isDesktopApp) {
                     type="button"
                     tabindex="0"
                     ${contextData}>
-                <i class="fa fa-home" style="color: #3498db;"></i>
+                ${td_render_menu_icon("website", "sm", "#3498db")}
                 <span>${__("Home")}</span>
             </button>
         </div>
     `;
 }
 
-function getMenuItemHTML(menu, isTabApp, isDesktopApp) {
-	const submenuHTML = menu.submenus
-		.map((submenu) => {
-			const route = submenu.route || `/app/${frappe.router.slug(submenu.doctype)}`;
-			const contextData = `data-tab-app="${isTabApp}" data-desktop-app="${isDesktopApp}"`;
+function getSubmenuItemHTML(submenu, isTabApp, isDesktopApp) {
+	const contextData = `data-tab-app="${isTabApp}" data-desktop-app="${isDesktopApp}"`;
+	const children = submenu.children || [];
 
-			return `
-            <a class="dropdown-item windows-submenu-item" href="${route}"
-               data-doctype="${submenu.doctype || ""}"
-               data-route="${submenu.route || ""}"
-               ${contextData}
-               tabindex="0">
-                <span>${submenu.label}</span>
-            </a>
-        `;
-		})
+	if (submenu.is_group || submenu.item_type === "Group" || children.length) {
+		const nestedHTML = children.map((child) => getSubmenuItemHTML(child, isTabApp, isDesktopApp)).join("");
+		return `
+			<div class="windows-submenu-group dropdown-item">
+				<div class="windows-submenu-group-label" tabindex="0">
+					<span>${frappe.utils.escape_html(submenu.label)}</span>
+					<i class="fa fa-chevron-right"></i>
+				</div>
+				<div class="dropdown-menu windows-dropdown-menu windows-nested-menu">
+					${nestedHTML}
+				</div>
+			</div>
+		`;
+	}
+
+	const route =
+		submenu.route ||
+		(submenu.doctype ? `/app/${frappe.router.slug(submenu.doctype)}` : "#");
+	return `
+		<a class="dropdown-item windows-submenu-item" href="${frappe.utils.escape_html(route)}"
+		   data-doctype="${frappe.utils.escape_html(submenu.doctype || "")}"
+		   data-route="${frappe.utils.escape_html(submenu.route || "")}"
+		   ${contextData}
+		   tabindex="0">
+			<span>${frappe.utils.escape_html(submenu.label)}</span>
+		</a>
+	`;
+}
+
+function getMenuItemHTML(menu, isTabApp, isDesktopApp) {
+	const submenuHTML = (menu.submenus || [])
+		.map((submenu) => getSubmenuItemHTML(submenu, isTabApp, isDesktopApp))
 		.join("");
 
-	const buttonId = `windows-menu-${menu.name.replace(/\s+/g, "-").toLowerCase()}`;
+	const buttonId = `windows-menu-${String(menu.name || menu.title || "menu")
+		.replace(/\s+/g, "-")
+		.toLowerCase()}`;
 
 	return `
         <div class="windows-menu-item dropdown">
             <button class="windows-menu-button dropdown-toggle"
                     type="button"
                     id="${buttonId}"
-                    style="border-left: 4px solid ${menu.color};"
+                    style="border-left: 4px solid ${menu.color || "#999"};"
                     aria-haspopup="true"
                     aria-expanded="false"
                     tabindex="0">
-                <i class="${menu.icon}" style="color: ${menu.color};"></i>
-                <span>${menu.title}</span>
+                ${td_render_menu_icon(menu.icon || "folder-normal", "sm", menu.color || "#999")}
+                <span>${frappe.utils.escape_html(menu.title || "")}</span>
             </button>
             <div class="dropdown-menu windows-dropdown-menu" aria-labelledby="${buttonId}">
                 ${submenuHTML}
@@ -227,259 +275,9 @@ function getMenuItemHTML(menu, isTabApp, isDesktopApp) {
 }
 
 function getERPNextMenuStructure() {
-	// Define all modules with their details
-	const allModules = [
-		{
-			name: "Customer",
-			title: __("Partners & Contacts"),
-			icon: "fa fa-users",
-			color: "#3498db",
-			submenus: [
-				{ label: __("Customer"), doctype: "Customer", icon: "fa fa-user" },
-				{ label: __("Supplier"), doctype: "Supplier", icon: "fa fa-truck" },
-				{ label: __("Customer Group"), doctype: "Customer Group", icon: "fa fa-users" },
-				{ label: __("Address"), doctype: "Address", icon: "fa fa-home" },
-				{ label: __("Contact"), doctype: "Contact", icon: "fa fa-phone" },
-			],
-		},
-		{
-			name: "Selling",
-			title: __("Sales & Selling"),
-			icon: "fa fa-shopping-cart",
-			color: "#2ecc71",
-			submenus: [
-				{ label: __("Quotation"), doctype: "Quotation", icon: "fa fa-file-text" },
-				{ label: __("Sales Order"), doctype: "Sales Order", icon: "fa fa-file-text-o" },
-				{ label: __("Sales Invoice"), doctype: "Sales Invoice", icon: "fa fa-file" },
-				{ label: __("POS Invoice"), doctype: "POS Invoice", icon: "fa fa-credit-card" },
-				{ label: __("Payment Entry"), doctype: "Payment Entry", icon: "fa fa-th" },
-			],
-		},
-		{
-			name: "Buying",
-			title: __("Purchase & Buying"),
-			icon: "fa fa-shopping-bag",
-			color: "#e74c3c",
-			submenus: [
-				{
-					label: __("Request for Quotation"),
-					doctype: "Request for Quotation",
-					icon: "fa fa-file-o",
-				},
-				{
-					label: __("Supplier Quotation"),
-					doctype: "Supplier Quotation",
-					icon: "fa fa-file-text-o",
-				},
-				{
-					label: __("Purchase Order"),
-					doctype: "Purchase Order",
-					icon: "fa fa-file-text",
-				},
-				{
-					label: __("Purchase Invoice"),
-					doctype: "Purchase Invoice",
-					icon: "fa fa-dollar",
-				},
-				{
-					label: __("Purchase Receipt"),
-					doctype: "Purchase Receipt",
-					icon: "fa fa-inbox",
-				},
-			],
-		},
-		{
-			name: "Stock",
-			title: __("Inventory & Stock"),
-			icon: "fa fa-cubes",
-			color: "#f39c12",
-			submenus: [
-				{ label: __("Item"), doctype: "Item", icon: "fa fa-cube" },
-				{ label: __("Item Group"), doctype: "Item Group", icon: "fa fa-cubes" },
-				{
-					label: __("Item Barcode Print"),
-					doctype: "Barcode Print",
-					route: "/app/barcode-print/new",
-					icon: "fa fa-qrcode",
-				},
-				{ label: __("Warehouse"), doctype: "Warehouse", icon: "fa fa-building" },
-				{ label: __("Stock Entry"), doctype: "Stock Entry", icon: "fa fa-exchange" },
-				{ label: __("Delivery Note"), doctype: "Delivery Note", icon: "fa fa-truck" },
-				{
-					label: __("Stock Reconciliation"),
-					doctype: "Stock Reconciliation",
-					icon: "fa fa-balance-scale",
-				},
-			],
-		},
-		{
-			name: "Reports",
-			title: __("Reports & Analytics"),
-			icon: "fa fa-bar-chart",
-			color: "#9b59b6",
-			submenus: [
-				{ label: __("All Reports"), route: "/app/reports", icon: "fa fa-list" },
-				{
-					label: __("Sales Analytics"),
-					route: "/app/query-report/Sales%20Analytics",
-					report_name: "Sales Analytics",
-					icon: "fa fa-line-chart",
-				},
-				{
-					label: __("Purchase Analytics"),
-					route: "/app/query-report/Purchase%20Analytics",
-					report_name: "Purchase Analytics",
-					icon: "fa fa-line-chart",
-				},
-				{
-					label: __("Stock Balance"),
-					route: "/app/query-report/Stock%20Balance",
-					report_name: "Stock Balance",
-					icon: "fa fa-cubes",
-				},
-				{
-					label: __("Profit and Loss Statement"),
-					route: "/app/query-report/Profit%20and%20Loss%20Statement",
-					report_name: "Profit and Loss Statement",
-					icon: "fa fa-calculator",
-				},
-				{
-					label: __("Balance Sheet"),
-					route: "/app/query-report/Balance%20Sheet",
-					report_name: "Balance Sheet",
-					icon: "fa fa-file-text",
-				},
-				{
-					label: __("POS Register"),
-					route: "/app/query-report/POS%20Register",
-					report_name: "POS Register",
-					icon: "fa fa-book",
-				},
-				{
-					label: __("Cash and Bank Summary"),
-					route: "/app/query-report/Cash%20and%20Bank%20Summary",
-					report_name: "Cash and Bank Summary",
-					icon: "fa fa-balance-scale",
-				},
-				{
-					label: __("Day Book"),
-					route: "/app/query-report/Day%20Book",
-					report_name: "Day Book",
-					icon: "fa fa-book",
-				},
-			],
-		},
-		{
-			name: "Accounting",
-			title: __("Accounting"),
-			icon: "fa fa-calculator",
-			color: "#1abc9c",
-			submenus: [
-				{
-					label: __("Chart of Accounts"),
-					route: "/app/account/view/tree",
-					icon: "fa fa-sitemap",
-				},
-				{
-					label: __("General Ledger"),
-					route: "/app/query-report/General%20Ledger",
-					report_name: "General Ledger",
-					icon: "fa fa-book",
-				},
-				{
-					label: __("Trial Balance"),
-					route: "/app/query-report/Trial%20Balance",
-					report_name: "Trial Balance",
-					icon: "fa fa-balance-scale",
-				},
-				{
-					label: __("Journal Entry"),
-					doctype: "Journal Entry",
-					icon: "fa fa-pencil-square-o",
-				},
-				{
-					label: __("Payment Reconciliation"),
-					doctype: "Payment Reconciliation",
-					icon: "fa fa-check-circle",
-				},
-				{
-					label: __("Bank Reconciliation"),
-					route: "/app/bank-reconciliation-tool",
-					icon: "fa fa-university",
-				},
-				{
-					label: __("Accounts Payable"),
-					route: "/app/query-report/Accounts%20Payable",
-					report_name: "Accounts Payable",
-					icon: "fa fa-arrow-circle-left",
-				},
-				{
-					label: __("Accounts Receivable"),
-					route: "/app/query-report/Accounts%20Receivable",
-					report_name: "Accounts Receivable",
-					icon: "fa fa-arrow-circle-right",
-				},
-			],
-		},
-		{
-			name: "Setup",
-			title: __("Settings & Setup"),
-			icon: "fa fa-cog",
-			color: "#34495e",
-			submenus: [
-				{ label: __("Company"), doctype: "Company", icon: "fa fa-building-o" },
-				{ label: __("User"), doctype: "User", icon: "fa fa-user" },
-				{ label: __("Role"), doctype: "Role", icon: "fa fa-shield" },
-				{ label: __("Print Format"), doctype: "Print Format", icon: "fa fa-print" },
-				{ label: __("System Settings"), doctype: "System Settings", icon: "fa fa-wrench" },
-			],
-		},
-	];
-
-	// Filter modules and submenus based on user permissions
-	const filteredModules = [];
-	for (const module of allModules) {
-		// Filter submenus based on permissions
-		const filteredSubmenus = [];
-		for (const submenu of module.submenus) {
-			// Handle permission checking based on item type
-			can_access = false;
-
-			if (submenu.report_name) {
-				// Check report permission - get the ref_doctype first
-				can_access = true;
-			} else {
-				// Check doctype permission (could be 'doctype' or 'required_doctype')
-				const doctype_to_check = submenu.doctype || submenu.required_doctype;
-				if (doctype_to_check) {
-					try {
-						can_access = frappe.model.can_read(doctype_to_check);
-					} catch (e) {
-						// Skip doctypes that don't exist or have permission issues
-						console.warn(
-							`Permission check failed for doctype: ${doctype_to_check}`,
-							e
-						);
-					}
-				} else {
-					can_access = true;
-				}
-			}
-
-			if (can_access) {
-				filteredSubmenus.push(submenu);
-			}
-		}
-
-		// Only include modules that have at least one accessible submenu
-		if (filteredSubmenus.length > 0) {
-			const moduleCopy = { ...module };
-			moduleCopy.submenus = filteredSubmenus;
-			filteredModules.push(moduleCopy);
-		}
-	}
-
-	return filteredModules;
+	const fromBoot =
+		(frappe.boot && frappe.boot.thunder_desk && frappe.boot.thunder_desk.windows_menu) || [];
+	return Array.isArray(fromBoot) ? fromBoot : [];
 }
 
 function setupWindowsMenuHandlers() {
@@ -488,10 +286,34 @@ function setupWindowsMenuHandlers() {
 	// Hover to open
 	$(document).on("mouseenter.windowsMenu", ".windows-menu-item", function () {
 		const $item = $(this);
-		$(".windows-dropdown-menu").removeClass("show");
+		$(".windows-menu-item > .windows-dropdown-menu").removeClass("show");
 		$(".windows-menu-button").removeClass("show").attr("aria-expanded", "false");
-		$item.find(".windows-dropdown-menu").addClass("show");
-		$item.find(".windows-menu-button").addClass("show").attr("aria-expanded", "true");
+		$item.children(".windows-dropdown-menu").addClass("show");
+		$item.children(".windows-menu-button").addClass("show").attr("aria-expanded", "true");
+	});
+
+	$(document).on("mouseenter.windowsMenu", ".windows-submenu-group", function (e) {
+		e.stopPropagation();
+		const $group = $(this);
+		// Close only sibling flyouts at this level (keep ancestors open)
+		$group.siblings(".windows-submenu-group").each(function () {
+			$(this).find(".windows-nested-menu").removeClass("show");
+		});
+		$group.children(".windows-nested-menu").addClass("show");
+	});
+
+	$(document).on("mouseleave.windowsMenu", ".windows-submenu-group", function (e) {
+		const $group = $(this);
+		const related = e.relatedTarget;
+		// Keep open when moving into nested flyout
+		if (related && $group[0].contains(related)) {
+			return;
+		}
+		setTimeout(() => {
+			if (!$group.is(":hover")) {
+				$group.children(".windows-nested-menu").removeClass("show");
+			}
+		}, 120);
 	});
 
 	$(document).on("mouseenter.windowsMenu", ".windows-dropdown-menu", function (e) {

@@ -33,34 +33,46 @@ frappe.query_reports["Day Book"] = {
 			default: "All",
 			on_change: function () {
 				const entry_type = frappe.query_report.get_filter_value("entry_type");
-				const voucher_type = frappe.query_report.get_filter_value("voucher_type");
-				if (voucher_type) {
+				const voucher_subtype = frappe.query_report.get_filter_value("voucher_subtype");
+				if (voucher_subtype) {
 					let allowed = [];
 					if (entry_type === "Accounting Entries") {
 						allowed = [
-							"Journal Entry",
-							"Payment Entry",
+							"Payment",
+							"Receipt",
+							"Contra",
 							"Sales Invoice",
+							"Credit Note",
 							"Purchase Invoice",
+							"Debit Note",
+							"Journal Entry",
 							"Period Closing Voucher"
 						];
 					} else if (entry_type === "Inventory Entries") {
 						allowed = [
+							"Delivery Note",
+							"Sales Return",
+							"Purchase Receipt",
+							"Purchase Return",
 							"Stock Entry",
 							"Stock Reconciliation",
-							"Delivery Note",
-							"Purchase Receipt",
 							"Asset Depreciation Ledger",
 							"Asset Value Adjustment"
 						];
 					} else {
 						allowed = [
-							"Journal Entry",
-							"Payment Entry",
+							"Payment",
+							"Receipt",
+							"Contra",
 							"Sales Invoice",
+							"Credit Note",
 							"Purchase Invoice",
+							"Debit Note",
+							"Journal Entry",
 							"Delivery Note",
+							"Sales Return",
 							"Purchase Receipt",
+							"Purchase Return",
 							"Stock Entry",
 							"Stock Reconciliation",
 							"Asset Depreciation Ledger",
@@ -68,58 +80,40 @@ frappe.query_reports["Day Book"] = {
 							"Period Closing Voucher"
 						];
 					}
-					if (!allowed.includes(voucher_type)) {
-						frappe.query_report.set_filter_value("voucher_type", "");
+					if (!allowed.includes(voucher_subtype)) {
+						frappe.query_report.set_filter_value("voucher_subtype", "");
 					}
 				}
 				frappe.query_report.refresh();
 			}
 		},
 		{
-			fieldname: "voucher_type",
+			fieldname: "voucher_subtype",
 			label: __("Voucher Type"),
-			fieldtype: "Link",
-			options: "DocType",
-			get_query: function () {
-				const entry_type = frappe.query_report.get_filter_value("entry_type") || "All";
-				let allowed_doctypes = [];
-				if (entry_type === "Accounting Entries") {
-					allowed_doctypes = [
-						"Journal Entry",
-						"Payment Entry",
-						"Sales Invoice",
-						"Purchase Invoice",
-						"Period Closing Voucher"
-					];
-				} else if (entry_type === "Inventory Entries") {
-					allowed_doctypes = [
-						"Stock Entry",
-						"Stock Reconciliation",
-						"Delivery Note",
-						"Purchase Receipt",
-						"Asset Depreciation Ledger",
-						"Asset Value Adjustment"
-					];
-				} else {
-					allowed_doctypes = [
-						"Journal Entry",
-						"Payment Entry",
-						"Sales Invoice",
-						"Purchase Invoice",
-						"Delivery Note",
-						"Purchase Receipt",
-						"Stock Entry",
-						"Stock Reconciliation",
-						"Asset Depreciation Ledger",
-						"Asset Value Adjustment",
-						"Period Closing Voucher"
-					];
-				}
-				return {
-					filters: {
-						name: ["in", allowed_doctypes]
-					}
-				};
+			fieldtype: "Select",
+			options: [
+				"",
+				"Payment",
+				"Receipt",
+				"Contra",
+				"Sales Invoice",
+				"Credit Note",
+				"Purchase Invoice",
+				"Debit Note",
+				"Journal Entry",
+				"Delivery Note",
+				"Sales Return",
+				"Purchase Receipt",
+				"Purchase Return",
+				"Stock Entry",
+				"Stock Reconciliation",
+				"Asset Depreciation Ledger",
+				"Asset Value Adjustment",
+				"Period Closing Voucher"
+			],
+			default: "",
+			on_change: function () {
+				frappe.query_report.refresh();
 			}
 		},
 	],
@@ -129,13 +123,20 @@ frappe.query_reports["Day Book"] = {
 	initial_depth: 0,
 	formatter: function (value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
-		if (column.fieldname === "voucher_type" && data && data.voucher_type === "Payment Entry" && value && typeof value === "string") {
-			if (data.payment_entry_type === "Receive") {
+		if (column.fieldname === "voucher_type" && data && value && typeof value === "string") {
+			const subtype = data.voucher_subtype;
+			if (subtype === "Receive") {
 				value = value.replace(/Payment Entry/g, __("Receipt"));
-			} else if (data.payment_entry_type === "Pay") {
+			} else if (subtype === "Pay") {
 				value = value.replace(/Payment Entry/g, __("Payment"));
-			} else if (data.payment_entry_type === "Internal Transfer") {
+			} else if (subtype === "Internal Transfer") {
 				value = value.replace(/Payment Entry/g, __("Contra"));
+			} else if (subtype === "Credit Note") {
+				value = value.replace(/Sales Invoice/g, __("Credit Note"));
+			} else if (subtype === "Debit Note") {
+				value = value.replace(/Purchase Invoice/g, __("Debit Note"));
+			} else if (subtype && subtype !== data.voucher_type) {
+				value = value.replace(new RegExp(data.voucher_type, "g"), __(subtype));
 			}
 		}
 

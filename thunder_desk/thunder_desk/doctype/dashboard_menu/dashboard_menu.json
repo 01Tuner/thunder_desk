@@ -1,0 +1,100 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "field:menu_key",
+  "creation": "2026-08-07 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "title",
+    "menu_key",
+    "column_break_1",
+    "icon",
+    "color",
+    "enabled",
+    "section_items",
+    "items"
+  ],
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "menu_key",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Menu Key",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "folder-normal",
+      "fieldname": "icon",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Icon"
+    },
+    {
+      "default": "#3498db",
+      "fieldname": "color",
+      "fieldtype": "Color",
+      "label": "Color"
+    },
+    {
+      "default": "1",
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "Enabled"
+    },
+    {
+      "fieldname": "section_items",
+      "fieldtype": "Section Break",
+      "label": "Items"
+    },
+    {
+      "fieldname": "items",
+      "fieldtype": "Table",
+      "label": "Items",
+      "options": "Dashboard Menu Item"
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2026-08-07 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Thunder Desk",
+  "name": "Dashboard Menu",
+  "naming_rule": "By fieldname",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "role": "Desk User"
+    }
+  ],
+  "sort_field": "idx",
+  "sort_order": "ASC",
+  "states": [],
+  "track_changes": 1
+}

@@ -12,3 +12,4 @@ thunder_desk.patches.add_pagedjs_option
 thunder_desk.patches.set_thunder_print_defaults
 thunder_desk.patches.add_print_headings
 thunder_desk.patches.remove_report_total
+thunder_desk.patches.remap_fa_icons_to_lucide

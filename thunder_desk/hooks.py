@@ -41,9 +41,13 @@ page_js = {
 
 # include js in doctype views
 doctype_js = {
-    "Item" : "public/js/item_overrides.js",
+    "Item": "public/js/item_overrides.js",
     "Sales Invoice": "public/js/sales_invoice_custom.js",
-    "Purchase Invoice": "public/js/purchase_invoice_custom.js"
+    "Purchase Invoice": "public/js/purchase_invoice_custom.js",
+    "Quotation": "public/js/quotation_custom.js",
+    "Sales Order": "public/js/sales_order_custom.js",
+    "Purchase Order": "public/js/purchase_order_custom.js",
+    "Thunder Desk Settings": "public/js/thunder_desk_settings_form.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -86,7 +90,7 @@ jinja = {
 
 # before_install = "thunder_desk.install.before_install"
 after_install = "thunder_desk.install.after_install"
-after_migrate = "thunder_desk.custom.setup.setup_custom_fields"
+after_migrate = "thunder_desk.install.after_migrate"
 
 # Uninstallation
 # ------------
@@ -269,6 +273,7 @@ extend_bootinfo = "thunder_desk.api.boot_session"
 # Global includes to replace ERPNext headers with modern dropdown menu
 app_include_js = [
     "/assets/thunder_desk/js/thunder_desk_loader.js",
+    "/assets/thunder_desk/js/item_history.js",
     "/assets/thunder_desk/js/company_switcher.js",
     "/assets/thunder_desk/js/global_company_filter.js",
     "/assets/thunder_desk/js/global_report_auto_print.js"

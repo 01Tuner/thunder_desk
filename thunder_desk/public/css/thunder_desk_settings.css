@@ -1,0 +1,309 @@
+/* Thunder Desk Settings Page */
+.td-settings-page {
+	padding: 12px 16px 40px;
+}
+
+.td-settings-tabs {
+	display: flex;
+	gap: 4px;
+	border-bottom: 1px solid var(--border-color);
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
+
+.td-settings-tabs .td-tab-btn {
+	border: none;
+	background: transparent;
+	padding: 10px 14px;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	color: var(--text-muted);
+	font-weight: 500;
+}
+
+.td-settings-tabs .td-tab-btn.active {
+	color: var(--text-color);
+	border-bottom-color: var(--primary);
+}
+
+.td-settings-section {
+	display: none;
+}
+
+.td-settings-section.active {
+	display: block;
+}
+
+.td-card {
+	background: var(--card-bg, var(--fg-color));
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.td-card h4 {
+	margin: 0 0 12px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.td-form-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 12px 16px;
+}
+
+.td-check-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.td-toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.td-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.td-list-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	margin-bottom: 8px;
+	background: var(--bg-color);
+}
+
+.td-list-item .meta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.td-list-item .meta i {
+	width: 18px;
+	text-align: center;
+}
+
+.td-list-item .actions {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.td-nested {
+	margin-left: 24px;
+}
+
+.td-muted {
+	color: var(--text-muted);
+	font-size: 12px;
+}
+
+.td-badge {
+	font-size: 11px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	background: var(--bg-gray);
+	color: var(--text-muted);
+}
+
+.td-collapse-btn {
+	border: none;
+	background: transparent;
+	padding: 4px 0;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-align: left;
+	color: inherit;
+	min-width: 0;
+	flex: 1;
+}
+
+.td-collapse-btn:hover {
+	opacity: 0.85;
+}
+
+.td-chevron {
+	width: 14px;
+	display: inline-block;
+	font-size: 10px;
+	color: var(--text-muted);
+}
+
+.td-wsm-body.hidden {
+	display: none !important;
+}
+
+.td-wsm-module-head .actions {
+	flex-shrink: 0;
+}
+
+/* Hybrid Desk + Font Awesome icon picker */
+.popover.td-icon-picker-popover {
+	max-width: none !important;
+	width: 300px !important;
+}
+
+.popover.td-icon-picker-popover .popover-body {
+	padding: 10px;
+	max-width: none;
+	width: 100%;
+}
+
+.td-icon-picker.icon-picker {
+	width: 280px !important;
+	max-width: 280px;
+	box-sizing: border-box;
+}
+
+.td-icon-picker .td-icon-tabs {
+	display: flex;
+	gap: 6px;
+	margin-bottom: 8px;
+}
+
+.td-icon-picker .td-icon-tab {
+	flex: 1 1 0;
+	border: 1px solid var(--border-color);
+	background: var(--control-bg, var(--bg-color));
+	color: var(--text-muted);
+	border-radius: 6px;
+	padding: 5px 8px;
+	font-size: 12px;
+	line-height: 1.2;
+	cursor: pointer;
+}
+
+.td-icon-picker .td-icon-tab.active {
+	background: var(--fg-color, #fff);
+	color: var(--text-color);
+	border-color: var(--primary);
+	box-shadow: inset 0 0 0 1px var(--primary);
+	font-weight: 600;
+}
+
+.td-icon-picker .search-icons {
+	position: relative;
+	width: 100%;
+}
+
+.td-icon-picker .search-icons input[type="search"] {
+	width: 100%;
+	box-sizing: border-box;
+	height: 28px;
+	padding: 4px 8px 4px 28px;
+}
+
+.td-icon-picker .search-icons .search-icon {
+	position: absolute;
+	top: 6px;
+	left: 8px;
+	pointer-events: none;
+	opacity: 0.7;
+}
+
+/* Force a proper icon grid (avoid form/grid CSS collisions) */
+.td-icon-picker .td-icon-grid,
+.td-icon-picker .icons.td-icon-grid {
+	margin-top: 10px !important;
+	display: grid !important;
+	grid-template-columns: repeat(7, 36px) !important;
+	justify-content: start;
+	gap: 4px !important;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 220px;
+	width: 100%;
+	flex-wrap: unset !important;
+	flex-direction: unset !important;
+}
+
+.td-icon-picker .td-icon-cell,
+.td-icon-picker .icons .td-icon-cell {
+	display: flex !important;
+	width: 36px !important;
+	min-width: 36px !important;
+	max-width: 36px !important;
+	height: 36px !important;
+	flex: none !important;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	cursor: pointer;
+	color: var(--text-color);
+	--icon-stroke: var(--text-color);
+	box-sizing: border-box;
+}
+
+.td-icon-picker .td-icon-cell:hover,
+.td-icon-picker .td-icon-cell.selected {
+	background: var(--subtle-fg, var(--control-bg, #f3f3f3));
+}
+
+.td-icon-picker .td-icon-cell i {
+	font-size: 15px;
+	line-height: 1;
+}
+
+.td-icon-picker .td-icon-cell .icon {
+	width: 18px !important;
+	height: 18px !important;
+	margin: 0 !important;
+}
+
+.frappe-control[data-fieldtype="Thunder Icon"] {
+	position: relative;
+}
+
+.frappe-control[data-fieldtype="Thunder Icon"] input {
+	padding-left: 40px;
+}
+
+.frappe-control[data-fieldtype="Thunder Icon"] .selected-icon {
+	cursor: pointer;
+	width: 22px;
+	height: 22px;
+	border-radius: 5px;
+	position: absolute;
+	top: calc(50% + 2px);
+	left: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	--icon-stroke: var(--text-color);
+	z-index: 2;
+}
+
+.frappe-control[data-fieldtype="Thunder Icon"] .selected-icon i {
+	font-size: 14px;
+}
+
+.frappe-control[data-fieldtype="Thunder Icon"] .selected-icon .icon {
+	width: 18px;
+	height: 18px;
+}
+
+.form-in-grid .frappe-control[data-fieldtype="Thunder Icon"] .selected-icon,
+.data-row.row .frappe-control[data-fieldtype="Thunder Icon"] .selected-icon {
+	top: calc(50% - 11px);
+	z-index: 3;
+}
+

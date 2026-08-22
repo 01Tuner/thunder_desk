@@ -298,7 +298,11 @@ def boot_session(bootinfo):
     """
     Extend bootinfo with Thunder Desk specific data.
     """
+    from thunder_desk.menu_api import get_windows_style_menu
+
+    settings = frappe.get_single("Thunder Desk Settings")
     bootinfo.thunder_desk = {
         "company_count": frappe.db.count("Company"),
-        "settings": frappe.get_single("Thunder Desk Settings")
+        "settings": settings,
+        "windows_menu": get_windows_style_menu(for_boot=True),
     }

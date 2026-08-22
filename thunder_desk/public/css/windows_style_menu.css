@@ -1,7 +1,7 @@
 /* Modern Clean UI/UX Menu Design */
 
 #windows-style-menu {
-	background: #f0f0f0;
+	background: var(--td-wsm-bg, #f0f0f0);
 	border-bottom: 1px solid #c0c0c0;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	position: sticky;
@@ -18,7 +18,7 @@
 	left: 0;
 	right: 0;
 	z-index: 10000;
-	background: #f0f0f0;
+	background: var(--td-wsm-bg, #f0f0f0);
 	border-bottom: 1px solid #c0c0c0;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .windows-menu-button:hover {
-	background: #e1e1e1;
+	background: var(--td-wsm-hover-bg, #e1e1e1);
 	color: #333;
 	text-decoration: none;
 	border-color: #ccc;
@@ -84,11 +84,18 @@
 	transition: background 0.1s ease;
 }
 
-.windows-menu-button i {
+.windows-menu-button i,
+.windows-menu-button .td-menu-icon,
+.windows-menu-button .icon {
 	font-size: 13px;
 	width: 16px;
 	text-align: center;
 	opacity: 0.8;
+}
+
+.windows-menu-button .td-menu-icon .icon {
+	width: 16px;
+	height: 16px;
 }
 
 .windows-menu-button span {
@@ -109,8 +116,9 @@
 	margin-top: -1px;
 	min-width: 200px;
 	font-size: 13px;
-	max-height: 400px;
-	overflow-y: auto;
+	/* visible so nested flyouts are not clipped */
+	max-height: none;
+	overflow: visible;
 	position: absolute;
 	display: none;
 	z-index: 10001;
@@ -121,6 +129,54 @@
 .windows-dropdown-menu.show {
 	display: block;
 	animation: windowsDropdownFadeIn 0.1s ease-out;
+}
+
+.windows-submenu-group {
+	position: relative;
+	padding: 0 !important;
+	display: block !important;
+}
+
+.windows-submenu-group-label {
+	padding: 6px 28px 6px 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	cursor: default;
+	color: inherit;
+}
+
+.windows-submenu-group-label i {
+	position: static !important;
+	width: auto !important;
+	margin-left: 8px;
+	font-size: 10px;
+}
+
+.windows-submenu-group:hover > .windows-submenu-group-label {
+	background: #316ac5;
+	color: white;
+}
+
+.windows-nested-menu {
+	top: 0;
+	left: 100%;
+	margin-top: 0;
+	margin-left: -1px;
+	z-index: 10002;
+}
+
+.windows-nested-menu .windows-nested-menu {
+	z-index: 10003;
+}
+
+.windows-nested-menu .windows-nested-menu .windows-nested-menu {
+	z-index: 10004;
+}
+
+.windows-nested-menu.show {
+	display: block;
 }
 
 .windows-dropdown-menu .dropdown-item {
@@ -319,7 +375,7 @@ html[data-theme="dark"] .windows-menu-button:focus-visible {
 
 /* Dark mode support */
 html[data-theme="dark"] #windows-style-menu {
-	background: #2d2d2d;
+	background: var(--td-wsm-bg-dark, #2d2d2d);
 	border-bottom-color: #555;
 }
 
@@ -328,7 +384,7 @@ html[data-theme="dark"] .windows-menu-button {
 }
 
 html[data-theme="dark"] .windows-menu-button:hover {
-	background: #3d3d3d;
+	background: var(--td-wsm-hover-bg-dark, #3d3d3d);
 	color: #fff;
 }
 
@@ -350,6 +406,20 @@ html[data-theme="dark"] .windows-dropdown-menu .dropdown-item {
 html[data-theme="dark"] .windows-dropdown-menu .dropdown-item:hover {
 	background: #0078d4;
 	color: #fff;
+}
+
+html[data-theme="dark"] .windows-submenu-group-label {
+	color: #e0e0e0;
+}
+
+html[data-theme="dark"] .windows-submenu-group:hover > .windows-submenu-group-label {
+	background: #0078d4;
+	color: #fff;
+}
+
+html[data-theme="dark"] .windows-submenu-group-label i {
+	color: inherit;
+	opacity: 0.85;
 }
 
 /* High contrast mode support */

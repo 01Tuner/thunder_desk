@@ -1,8 +1,20 @@
 {% extends "templates/web.html" %} {% block title %}{{ title }}{% endblock %} {% block head_include
 %}
-<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css?v=1.0.6" />
+<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css?v=1.0.7" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 <style>
+	:root {
+		--td-dm-bg: {{ appearance.dm_light_bg }};
+		--td-dm-hover-bg: {{ appearance.dm_light_hover_bg }};
+		--td-qa-bg: {{ appearance.qa_light_bg }};
+		--td-qa-hover-bg: {{ appearance.qa_light_hover_bg }};
+	}
+	html[data-theme="dark"] {
+		--td-dm-bg: {{ appearance.dm_dark_bg }};
+		--td-dm-hover-bg: {{ appearance.dm_dark_hover_bg }};
+		--td-qa-bg: {{ appearance.qa_dark_bg }};
+		--td-qa-hover-bg: {{ appearance.qa_dark_hover_bg }};
+	}
 	/* Search Bar Styles */
 	.search-container {
 		position: relative;
@@ -159,6 +171,15 @@
 	}
 </style>
 {% endblock %} {% block content %}
+{# Render Lucide SVG icon or legacy Font Awesome class #}
+{% macro td_icon(name, size='md') %}
+	{% set icon = name or 'folder-normal' %}
+	{% if 'fa-' in icon or icon.startswith('fa ') %}
+		<i class="{{ icon }}"></i>
+	{% else %}
+		<svg class="icon icon-{{ size }}" aria-hidden="true"><use href="#icon-{{ icon }}"></use></svg>
+	{% endif %}
+{% endmacro %}
 <div class="thunder-dashboard">
 	<!-- Header -->
 	<div class="dashboard-header">
@@ -200,26 +221,12 @@
 				<div class="container">
 					<h3>{{ _("Quick Actions") }}</h3>
 					<div class="actions-grid">
-						<a href="/app/point-of-sale" class="action-btn pos-btn">
-							<i class="fa fa-th"></i>
-							<span>{{ _("Point of Sale") }}</span>
+						{% for action in quick_actions %}
+						<a href="{{ action.route }}" class="action-btn {{ action.css_class }}">
+							{{ td_icon(action.icon, 'md') }}
+							<span>{{ action.label }}</span>
 						</a>
-						<a href="/app/sales-invoice/new" class="action-btn invoice-btn">
-							<i class="fa fa-file"></i>
-							<span>{{ _("New Invoice") }}</span>
-						</a>
-						<a href="/app/customer/new" class="action-btn customer-btn">
-							<i class="fa fa-user-plus"></i>
-							<span>{{ _("New Customer") }}</span>
-						</a>
-						<a href="/app/item/new" class="action-btn item-btn">
-							<i class="fa fa-plus-circle"></i>
-							<span>{{ _("New Item") }}</span>
-						</a>
-						<a href="/app/barcode-print/new" class="action-btn barcode-btn">
-							<i class="fa fa-barcode"></i>
-							<span>{{ _("Print Barcode") }}</span>
-						</a>
+						{% endfor %}
 					</div>
 				</div>
 			</div>
@@ -227,8 +234,8 @@
 				{% for module in modules %}
 				<div class="module-card" data-module="{{ module.name }}">
 					<div class="module-header" style="border-left: 4px solid {{ module.color }}">
-						<div class="module-icon" style="color: {{ module.color }}">
-							<i class="{{ module.icon }}"></i>
+						<div class="module-icon" style="color: {{ module.color }}; --icon-stroke: {{ module.color }}">
+							{{ td_icon(module.icon, 'md') }}
 						</div>
 						<h3 class="module-title">{{ module.title }}</h3>
 					</div>
@@ -237,7 +244,7 @@
 						{% for item in module['items'] %}
 						<a href="{% if item.get('route') %}{{ item.route }}{% else %}/app/{{ item.doctype | lower | replace(' ', '-') }}{% endif %}"
 							class="module-item">
-							<i class="{{ item.icon }}"></i>
+							{{ td_icon(item.icon, 'sm') }}
 							<span>{{ item.label }}</span>
 							<i class="fa fa-chevron-right item-arrow"></i>
 						</a>

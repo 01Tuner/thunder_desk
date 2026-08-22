@@ -81,6 +81,105 @@
                 "fieldtype": "Check",
                 "default": 0,
                 "description": "When enabled, shows the available stock quantity next to each item in search dropdowns."
+            },
+            {
+                "label": "Windows Style Menu Appearance",
+                "fieldname": "wsm_appearance_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Light Background",
+                "fieldname": "wsm_light_bg",
+                "fieldtype": "Color",
+                "default": "#f0f0f0"
+            },
+            {
+                "label": "Light Hover Background",
+                "fieldname": "wsm_light_hover_bg",
+                "fieldtype": "Color",
+                "default": "#e1e1e1"
+            },
+            {
+                "fieldname": "wsm_appearance_col",
+                "fieldtype": "Column Break"
+            },
+            {
+                "label": "Dark Background",
+                "fieldname": "wsm_dark_bg",
+                "fieldtype": "Color",
+                "default": "#2d2d2d"
+            },
+            {
+                "label": "Dark Hover Background",
+                "fieldname": "wsm_dark_hover_bg",
+                "fieldtype": "Color",
+                "default": "#3d3d3d"
+            },
+            {
+                "label": "Dashboard Menu Appearance",
+                "fieldname": "dm_appearance_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Light Background",
+                "fieldname": "dm_light_bg",
+                "fieldtype": "Color",
+                "default": "#ffffff"
+            },
+            {
+                "label": "Light Hover Background",
+                "fieldname": "dm_light_hover_bg",
+                "fieldtype": "Color",
+                "default": "#f8f9fa"
+            },
+            {
+                "fieldname": "dm_appearance_col",
+                "fieldtype": "Column Break"
+            },
+            {
+                "label": "Dark Background",
+                "fieldname": "dm_dark_bg",
+                "fieldtype": "Color",
+                "default": "#2d2d2d"
+            },
+            {
+                "label": "Dark Hover Background",
+                "fieldname": "dm_dark_hover_bg",
+                "fieldtype": "Color",
+                "default": "#3d3d3d"
+            },
+            {
+                "label": "Quick Actions Appearance",
+                "fieldname": "qa_appearance_section",
+                "fieldtype": "Section Break"
+            },
+            {
+                "label": "Light Background",
+                "fieldname": "qa_light_bg",
+                "fieldtype": "Color",
+                "default": "#ffffff"
+            },
+            {
+                "label": "Light Hover Background",
+                "fieldname": "qa_light_hover_bg",
+                "fieldtype": "Color",
+                "default": "#f8f9fa"
+            },
+            {
+                "fieldname": "qa_appearance_col",
+                "fieldtype": "Column Break"
+            },
+            {
+                "label": "Dark Background",
+                "fieldname": "qa_dark_bg",
+                "fieldtype": "Color",
+                "default": "#2d2d2d"
+            },
+            {
+                "label": "Dark Hover Background",
+                "fieldname": "qa_dark_hover_bg",
+                "fieldtype": "Color",
+                "default": "#3d3d3d"
             }
         ]
     }

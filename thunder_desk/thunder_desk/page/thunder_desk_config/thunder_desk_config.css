@@ -1,0 +1,158 @@
+/* Thunder Desk Settings Page */
+.td-settings-page {
+	padding: 12px 16px 40px;
+}
+
+.td-settings-tabs {
+	display: flex;
+	gap: 4px;
+	border-bottom: 1px solid var(--border-color);
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
+
+.td-settings-tabs .td-tab-btn {
+	border: none;
+	background: transparent;
+	padding: 10px 14px;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	color: var(--text-muted);
+	font-weight: 500;
+}
+
+.td-settings-tabs .td-tab-btn.active {
+	color: var(--text-color);
+	border-bottom-color: var(--primary);
+}
+
+.td-settings-section {
+	display: none;
+}
+
+.td-settings-section.active {
+	display: block;
+}
+
+.td-card {
+	background: var(--card-bg, var(--fg-color));
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.td-card h4 {
+	margin: 0 0 12px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.td-form-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 12px 16px;
+}
+
+.td-check-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.td-toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.td-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.td-list-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	margin-bottom: 8px;
+	background: var(--bg-color);
+}
+
+.td-list-item .meta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.td-list-item .meta i {
+	width: 18px;
+	text-align: center;
+}
+
+.td-list-item .actions {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.td-nested {
+	margin-left: 24px;
+}
+
+.td-muted {
+	color: var(--text-muted);
+	font-size: 12px;
+}
+
+.td-badge {
+	font-size: 11px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	background: var(--bg-gray);
+	color: var(--text-muted);
+}
+
+.td-collapse-btn {
+	border: none;
+	background: transparent;
+	padding: 4px 0;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-align: left;
+	color: inherit;
+	min-width: 0;
+	flex: 1;
+}
+
+.td-collapse-btn:hover {
+	opacity: 0.85;
+}
+
+.td-chevron {
+	width: 14px;
+	display: inline-block;
+	font-size: 10px;
+	color: var(--text-muted);
+}
+
+.td-wsm-body.hidden {
+	display: none !important;
+}
+
+.td-wsm-module-head .actions {
+	flex-shrink: 0;
+}
+
