@@ -8,7 +8,7 @@ import frappe
 FA_TO_LUCIDE = {
 	"fa fa-users": "users",
 	"fa fa-user": "customer",
-	"fa fa-user-plus": "add-round",
+	"fa fa-user-plus": "customer",
 	"fa fa-truck": "stock",
 	"fa fa-home": "website",
 	"fa fa-phone": "call",
@@ -72,4 +72,17 @@ def execute():
 				WHERE icon = %s OR TRIM(icon) = %s
 				""",
 				(new, old, old),
+			)
+		if frappe.db.has_column(doctype, "label"):
+			conditions = ["label = 'New Customer'"]
+			if frappe.db.has_column(doctype, "route"):
+				conditions.append("route = '/app/customer/new'")
+			where_clause = " OR ".join(conditions)
+			frappe.db.sql(
+				f"""
+				UPDATE `tab{doctype}`
+				SET icon = 'customer'
+				WHERE ({where_clause})
+				AND (icon = 'add-round' OR icon = 'fa fa-user-plus')
+				"""
 			)

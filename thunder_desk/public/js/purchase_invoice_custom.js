@@ -15,6 +15,26 @@ frappe.ui.form.on("Purchase Invoice", {
                 });
             }
         });
+
+        // Extended Item Search: shows available qty / valuation rate in the item_code dropdown.
+        const settings = frappe.boot.thunder_desk?.settings || {};
+        const company_count = frappe.boot.thunder_desk?.company_count || 0;
+
+        if ((settings.show_item_qty_in_search || settings.show_item_valuation_rate_in_search) && company_count <= 1) {
+            const original_query = frm.fields_dict['items']?.grid?.get_field('item_code')?.get_query?.();
+            frm.set_query('item_code', 'items', function (doc, cdt, cdn) {
+                const base = (typeof original_query === 'function')
+                    ? (original_query(doc, cdt, cdn) || {})
+                    : (original_query || {});
+                const safe_filters = Object.fromEntries(
+                    Object.entries(base.filters || {}).filter(([k]) => k !== 'supplier')
+                );
+                return {
+                    query: 'thunder_desk.api.get_records_for_company',
+                    filters: safe_filters
+                };
+            });
+        }
     },
     update_selling_price: function (frm) {
         frm.trigger("toggle_selling_price_column");

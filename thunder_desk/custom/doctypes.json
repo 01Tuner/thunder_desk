@@ -83,6 +83,13 @@
                 "description": "When enabled, shows the available stock quantity next to each item in search dropdowns."
             },
             {
+                "label": "Show Valuation Rate in Item Search",
+                "fieldname": "show_item_valuation_rate_in_search",
+                "fieldtype": "Check",
+                "default": 0,
+                "description": "When enabled, shows the inventory valuation rate next to each item in search dropdowns."
+            },
+            {
                 "label": "Windows Style Menu Appearance",
                 "fieldname": "wsm_appearance_section",
                 "fieldtype": "Section Break"

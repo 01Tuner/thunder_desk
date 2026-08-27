@@ -191,9 +191,10 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
         qualified_select = ", ".join([f"`tabItem`.`{f}`" for f in select_columns])
         
         show_qty = frappe.db.get_single_value("Thunder Desk Settings", "show_item_qty_in_search")
+        show_val_rate = frappe.db.get_single_value("Thunder Desk Settings", "show_item_valuation_rate_in_search")
         
-        if show_qty:
-            # LEFT JOIN tabBin and then tabWarehouse to show qty
+        if show_qty or show_val_rate:
+            # LEFT JOIN tabBin and then tabWarehouse to show qty and/or valuation rate
             # only from active warehouses belonging to the selected company.
             # Must use GROUP BY instead of DISTINCT when using aggregate functions.
             if company:
@@ -206,9 +207,33 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
             else:
                 bin_join = "LEFT JOIN `tabBin` ON `tabBin`.item_code = `tabItem`.name"
 
+            val_rate_expr = """IFNULL(
+                ROUND(
+                    CASE 
+                        WHEN SUM(IFNULL(`tabBin`.actual_qty, 0)) > 0 AND SUM(IFNULL(`tabBin`.stock_value, 0)) > 0 
+                            THEN SUM(`tabBin`.stock_value) / SUM(`tabBin`.actual_qty)
+                        WHEN MAX(IFNULL(`tabBin`.valuation_rate, 0)) > 0 
+                            THEN MAX(`tabBin`.valuation_rate)
+                        ELSE IFNULL(`tabItem`.valuation_rate, 0)
+                    END, 
+                    2
+                ), 
+                0
+            )"""
+
+            if show_qty and show_val_rate:
+                item_info_expr = f"""CONCAT(
+                    '| Qty: ', IFNULL(ROUND(SUM(`tabBin`.actual_qty), 2), 0),
+                    ' | Val Rate: ', {val_rate_expr}
+                ) AS item_info"""
+            elif show_qty:
+                item_info_expr = "CONCAT('| Qty: ', IFNULL(ROUND(SUM(`tabBin`.actual_qty), 2), 0)) AS item_info"
+            else:
+                item_info_expr = f"CONCAT('| Val Rate: ', {val_rate_expr}) AS item_info"
+
             return frappe.db.sql(f"""
                 SELECT {qualified_select},
-                    CONCAT('| Qty: ', IFNULL(ROUND(SUM(`tabBin`.actual_qty), 2), 0)) AS item_info
+                    {item_info_expr}
                 FROM `tabItem`
                 {bin_join}
                 WHERE {where_clause} {fcond} {mcond}
@@ -217,7 +242,7 @@ def get_records_for_company(doctype, txt, searchfield, start, page_len, filters)
                 LIMIT %(start)s, %(page_len)s
             """, {**values, "start": start, "page_len": page_len})
 
-        # Qty not enabled - simple query
+        # Neither enabled - simple query
         return frappe.db.sql(f"""
             SELECT DISTINCT {qualified_select}
             FROM `tabItem`

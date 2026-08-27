@@ -205,7 +205,7 @@ DASHBOARD_MENUS = [
 QUICK_ACTIONS = [
 	{"label": "Point of Sale", "icon": "retail", "route": "/app/point-of-sale", "css_class": "pos-btn"},
 	{"label": "New Invoice", "icon": "file", "route": "/app/sales-invoice/new", "css_class": "invoice-btn"},
-	{"label": "New Customer", "icon": "add-round", "route": "/app/customer/new", "css_class": "customer-btn"},
+	{"label": "New Customer", "icon": "customer", "route": "/app/customer/new", "css_class": "customer-btn"},
 	{"label": "New Item", "icon": "add", "route": "/app/item/new", "css_class": "item-btn"},
 	{"label": "Print Barcode", "icon": "scan", "route": "/app/barcode-print/new", "css_class": "barcode-btn"},
 ]

@@ -41,10 +41,10 @@ def execute():
 	global_defaults.save()
 
 	# Stock Settings
-	frappe.reload_doc("stock", "doctype", "stock_settings")
-	try:
-		stock_settings = frappe.get_single("Stock Settings")
-		stock_settings.valuation_method = "Moving Average"
-		stock_settings.save()
-	except Exception:
-		pass
+	# frappe.reload_doc("stock", "doctype", "stock_settings")
+	# try:
+	# 	stock_settings = frappe.get_single("Stock Settings")
+	# 	stock_settings.valuation_method = "Moving Average"
+	# 	stock_settings.save()
+	# except Exception:
+	# 	pass

@@ -30,8 +30,8 @@ frappe.ui.form.on('Sales Invoice Item', {
     }
 });
 
-// Extended Item Search: shows available qty in the item_code dropdown.
-// Only active when show_item_qty_in_search is enabled in Thunder Desk Settings
+// Extended Item Search: shows available qty / valuation rate in the item_code dropdown.
+// Only active when show_item_qty_in_search or show_item_valuation_rate_in_search is enabled in Thunder Desk Settings
 // and the site is single-company (multi-company uses global_company_filter.js).
 // Placed here (doctype_js) so it runs AFTER ERPNext's own Sales Invoice scripts
 // and our set_query is not overridden by the standard query.
@@ -40,7 +40,7 @@ frappe.ui.form.on('Sales Invoice', {
         const settings = frappe.boot.thunder_desk?.settings || {};
         const company_count = frappe.boot.thunder_desk?.company_count || 0;
 
-        if (!settings.show_item_qty_in_search || company_count > 1) {
+        if ((!settings.show_item_qty_in_search && !settings.show_item_valuation_rate_in_search) || company_count > 1) {
             return;
         }
 

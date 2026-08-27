@@ -143,6 +143,7 @@ class ThunderDeskSettingsPage {
 			<div class="td-card">
 				<h4>${__("Item Search")}</h4>
 				<label class="td-check-row"><input type="checkbox" data-field="show_item_qty_in_search" ${s.show_item_qty_in_search ? "checked" : ""}> ${__("Show Available Qty in Item Search")}</label>
+				<label class="td-check-row"><input type="checkbox" data-field="show_item_valuation_rate_in_search" ${s.show_item_valuation_rate_in_search ? "checked" : ""}> ${__("Show Valuation Rate in Item Search")}</label>
 			</div>
 			<button class="btn btn-primary btn-sm" data-action="save-general">${__("Save")}</button>
 		`);
@@ -159,6 +160,7 @@ class ThunderDeskSettingsPage {
 				"supplier_default_company",
 				"item_default_company",
 				"show_item_qty_in_search",
+				"show_item_valuation_rate_in_search",
 			]);
 		});
 	}

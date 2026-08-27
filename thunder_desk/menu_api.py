@@ -296,6 +296,7 @@ def save_thunder_desk_settings(settings):
 		"supplier_default_company",
 		"item_default_company",
 		"show_item_qty_in_search",
+		"show_item_valuation_rate_in_search",
 		"wsm_light_bg",
 		"wsm_light_hover_bg",
 		"wsm_dark_bg",
