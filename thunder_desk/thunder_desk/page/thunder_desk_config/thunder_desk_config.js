@@ -496,6 +496,7 @@ class ThunderDeskSettingsPage {
 					options: "DocType",
 					default: doc?.link_doctype,
 					depends_on: "eval:doc.item_type=='DocType'",
+					mandatory_depends_on: "eval:doc.item_type=='DocType'",
 				},
 				{
 					fieldname: "report_name",
@@ -504,6 +505,7 @@ class ThunderDeskSettingsPage {
 					options: "Report",
 					default: doc?.report_name,
 					depends_on: "eval:doc.item_type=='Report'",
+					mandatory_depends_on: "eval:doc.item_type=='Report'",
 				},
 				{
 					fieldname: "route",
@@ -511,7 +513,7 @@ class ThunderDeskSettingsPage {
 					fieldtype: "Data",
 					default: doc?.route,
 					depends_on: "eval:doc.item_type=='Route'",
-					reqd: 1,
+					mandatory_depends_on: "eval:doc.item_type=='Route'",
 				},
 				{ fieldname: "icon", label: __("Icon"), fieldtype: "Thunder Icon", default: doc?.icon || "file" },
 				{ fieldname: "enabled", label: __("Enabled"), fieldtype: "Check", default: doc?.name ? doc.enabled : 1 },
@@ -536,6 +538,28 @@ class ThunderDeskSettingsPage {
 					payload.is_group = 1;
 				} else {
 					payload.is_group = 0;
+					if (payload.item_type === "DocType") {
+						if (!payload.link_doctype) {
+							frappe.msgprint(__("DocType is required"));
+							return;
+						}
+						payload.report_name = "";
+						payload.route = "";
+					} else if (payload.item_type === "Report") {
+						if (!payload.report_name) {
+							frappe.msgprint(__("Report is required"));
+							return;
+						}
+						payload.link_doctype = "";
+						payload.route = "";
+					} else if (payload.item_type === "Route") {
+						if (!payload.route) {
+							frappe.msgprint(__("Route is required"));
+							return;
+						}
+						payload.link_doctype = "";
+						payload.report_name = "";
+					}
 				}
 				this.close_dialog();
 				this.save_doc("Windows Style Menu Item", payload);
@@ -639,7 +663,7 @@ class ThunderDeskSettingsPage {
 				report_name: i.report_name,
 				route: i.route,
 				icon: i.icon,
-				enabled: i.enabled,
+				enabled: i.enabled !== undefined ? i.enabled : 1,
 				idx: i.idx,
 			}));
 		const d = new frappe.ui.Dialog({
@@ -666,11 +690,35 @@ class ThunderDeskSettingsPage {
 							label: __("Type"),
 							fieldtype: "Select",
 							options: "DocType\nReport\nRoute",
+							default: "DocType",
 							in_list_view: 1,
 						},
-						{ fieldname: "link_doctype", label: __("DocType"), fieldtype: "Link", options: "DocType", in_list_view: 1 },
-						{ fieldname: "report_name", label: __("Report"), fieldtype: "Link", options: "Report", in_list_view: 1 },
-						{ fieldname: "route", label: __("Route"), fieldtype: "Data", in_list_view: 1 },
+						{
+							fieldname: "link_doctype",
+							label: __("DocType"),
+							fieldtype: "Link",
+							options: "DocType",
+							in_list_view: 1,
+							depends_on: "eval:doc.item_type=='DocType'",
+							mandatory_depends_on: "eval:doc.item_type=='DocType'",
+						},
+						{
+							fieldname: "report_name",
+							label: __("Report"),
+							fieldtype: "Link",
+							options: "Report",
+							in_list_view: 1,
+							depends_on: "eval:doc.item_type=='Report'",
+							mandatory_depends_on: "eval:doc.item_type=='Report'",
+						},
+						{
+							fieldname: "route",
+							label: __("Route"),
+							fieldtype: "Data",
+							in_list_view: 1,
+							depends_on: "eval:doc.item_type=='Route'",
+							mandatory_depends_on: "eval:doc.item_type=='Route'",
+						},
 						{ fieldname: "icon", label: __("Icon"), fieldtype: "Thunder Icon", in_list_view: 1 },
 						{ fieldname: "enabled", label: __("Enabled"), fieldtype: "Check", default: 1, in_list_view: 1 },
 					],
@@ -685,24 +733,46 @@ class ThunderDeskSettingsPage {
 					grid && grid.get_data
 						? grid.get_data()
 						: (values.items || []).slice().sort((a, b) => (a.idx || 0) - (b.idx || 0));
+
+				const validRows = (ordered || []).filter((r) => r && !r.__deleted && r.label);
+
+				for (let i = 0; i < validRows.length; i++) {
+					const r = validRows[i];
+					const item_type = r.item_type || "DocType";
+					const rowNum = i + 1;
+					if (item_type === "DocType" && !r.link_doctype) {
+						frappe.msgprint(__("Row #{0}: DocType is required for item '{1}'", [rowNum, r.label]));
+						return;
+					}
+					if (item_type === "Report" && !r.report_name) {
+						frappe.msgprint(__("Row #{0}: Report is required for item '{1}'", [rowNum, r.label]));
+						return;
+					}
+					if (item_type === "Route" && !r.route) {
+						frappe.msgprint(__("Row #{0}: Route is required for item '{1}'", [rowNum, r.label]));
+						return;
+					}
+				}
+
 				const payload = {
 					title: values.title,
 					menu_key: values.menu_key,
 					icon: values.icon,
 					color: values.color,
 					enabled: values.enabled,
-					items: (ordered || [])
-						.filter((r) => r && !r.__deleted && r.label)
-						.map((r, idx) => ({
+					items: validRows.map((r, idx) => {
+						const item_type = r.item_type || "DocType";
+						return {
 							label: r.label,
-							item_type: r.item_type,
-							link_doctype: r.link_doctype,
-							report_name: r.report_name,
-							route: r.route,
+							item_type: item_type,
+							link_doctype: item_type === "DocType" ? r.link_doctype : null,
+							report_name: item_type === "Report" ? r.report_name : null,
+							route: item_type === "Route" ? r.route : null,
 							icon: r.icon,
-							enabled: r.enabled,
+							enabled: r.enabled !== undefined ? r.enabled : 1,
 							idx: idx + 1,
-						})),
+						};
+					}),
 				};
 				if (doc?.name) payload.name = doc.name;
 				this.close_dialog();

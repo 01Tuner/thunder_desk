@@ -33,12 +33,21 @@ class WindowsStyleMenuItem(Document):
 		if not self.item_type:
 			frappe.throw(frappe._("Type is required"))
 
-		if self.item_type == "DocType" and not self.link_doctype:
-			frappe.throw(frappe._("DocType is required"))
-		if self.item_type == "Report" and not self.report_name:
-			frappe.throw(frappe._("Report is required"))
-		if self.item_type == "Route" and not self.route:
-			frappe.throw(frappe._("Route is required"))
+		if self.item_type == "DocType":
+			if not self.link_doctype:
+				frappe.throw(frappe._("DocType is required"))
+			self.report_name = None
+			self.route = None
+		elif self.item_type == "Report":
+			if not self.report_name:
+				frappe.throw(frappe._("Report is required"))
+			self.link_doctype = None
+			self.route = None
+		elif self.item_type == "Route":
+			if not self.route:
+				frappe.throw(frappe._("Route is required"))
+			self.link_doctype = None
+			self.report_name = None
 
 	def _validate_no_cycle(self):
 		visited = set()

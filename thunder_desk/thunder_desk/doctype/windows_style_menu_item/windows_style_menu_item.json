@@ -87,6 +87,7 @@
       "fieldname": "link_doctype",
       "fieldtype": "Link",
       "label": "DocType",
+      "mandatory_depends_on": "eval:doc.item_type=='DocType'",
       "options": "DocType"
     },
     {
@@ -94,6 +95,7 @@
       "fieldname": "report_name",
       "fieldtype": "Link",
       "label": "Report",
+      "mandatory_depends_on": "eval:doc.item_type=='Report'",
       "options": "Report"
     },
     {

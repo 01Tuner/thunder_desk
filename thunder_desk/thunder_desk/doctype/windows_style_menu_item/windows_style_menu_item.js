@@ -17,6 +17,15 @@ frappe.ui.form.on("Windows Style Menu Item", {
 			frm.set_value("link_doctype", "");
 			frm.set_value("report_name", "");
 			frm.set_value("route", "");
+		} else if (frm.doc.item_type === "DocType") {
+			frm.set_value("report_name", "");
+			frm.set_value("route", "");
+		} else if (frm.doc.item_type === "Report") {
+			frm.set_value("link_doctype", "");
+			frm.set_value("route", "");
+		} else if (frm.doc.item_type === "Route") {
+			frm.set_value("link_doctype", "");
+			frm.set_value("report_name", "");
 		}
 	},
 });

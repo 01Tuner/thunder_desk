@@ -359,6 +359,19 @@ def _save_dashboard_menu(doc):
 		"enabled": doc.get("enabled"),
 	}
 
+	def _build_row(row, idx):
+		item_type = row.get("item_type") or "DocType"
+		return {
+			"label": row.label,
+			"item_type": item_type,
+			"link_doctype": row.link_doctype if item_type == "DocType" else None,
+			"report_name": row.report_name if item_type == "Report" else None,
+			"route": row.route if item_type == "Route" else None,
+			"icon": row.icon,
+			"enabled": 1 if row.get("enabled") in (None, 1, "1", True) else 0,
+			"idx": idx,
+		}
+
 	if doc.get("name") and frappe.db.exists("Dashboard Menu", doc.name):
 		existing = frappe.get_doc("Dashboard Menu", doc.name)
 		existing.update(payload)
@@ -367,19 +380,7 @@ def _save_dashboard_menu(doc):
 			row = frappe._dict(row)
 			if not row.get("label"):
 				continue
-			existing.append(
-				"items",
-				{
-					"label": row.label,
-					"item_type": row.item_type or "DocType",
-					"link_doctype": row.link_doctype,
-					"report_name": row.report_name,
-					"route": row.route,
-					"icon": row.icon,
-					"enabled": 1 if row.get("enabled") in (None, 1, "1", True) else 0,
-					"idx": idx,
-				},
-			)
+			existing.append("items", _build_row(row, idx))
 		existing.save(ignore_permissions=True)
 		return existing.as_dict()
 
@@ -388,18 +389,7 @@ def _save_dashboard_menu(doc):
 		row = frappe._dict(row)
 		if not row.get("label"):
 			continue
-		payload["items"].append(
-			{
-				"label": row.label,
-				"item_type": row.item_type or "DocType",
-				"link_doctype": row.link_doctype,
-				"report_name": row.report_name,
-				"route": row.route,
-				"icon": row.icon,
-				"enabled": 1 if row.get("enabled") in (None, 1, "1", True) else 0,
-				"idx": idx,
-			}
-		)
+		payload["items"].append(_build_row(row, idx))
 	new_doc = frappe.get_doc(payload)
 	new_doc.insert(ignore_permissions=True)
 	return new_doc.as_dict()
