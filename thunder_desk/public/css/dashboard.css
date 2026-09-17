@@ -157,6 +157,33 @@ footer,
     font-size: 0.9rem;
 }
 
+.pwa-install-btn {
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-items: center;
+    gap: 7px;
+}
+
+.pwa-install-btn:hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+.pwa-install-btn:active {
+    transform: translateY(0);
+}
+
 .logout-btn {
     background: rgba(255, 255, 255, 0.2);
     color: white;

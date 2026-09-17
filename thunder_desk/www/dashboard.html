@@ -1,6 +1,17 @@
 {% extends "templates/web.html" %} {% block title %}{{ title }}{% endblock %} {% block head_include
 %}
-<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css?v=1.0.7" />
+<!-- Thunder Desk PWA -->
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#2563eb" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Thunder Desk" />
+<link rel="apple-touch-icon" href="/assets/thunder_desk/images/icons/icon-180x180.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/thunder_desk/images/icons/icon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/thunder_desk/images/icons/icon-16x16.png">
+
+<link rel="stylesheet" href="/assets/thunder_desk/css/dashboard.css?v=1.0.8" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 <style>
 	:root {
@@ -204,6 +215,10 @@
 
 				<div class="user-info">
 					<span class="welcome-text">{{ _("Welcome,") }} {{ user_name }}</span>
+					<button type="button" class="pwa-install-btn" id="pwa-install-btn" style="display: none;" title="{{ _('Install Thunder Desk App') }}">
+						<i class="fa fa-download"></i>
+						<span>{{ _("Install App") }}</span>
+					</button>
 					<a href="#" class="logout-btn" onclick="handleLogout(event)">
 						<i class="fa fa-sign-out"></i>
 						{{ _("Logout") }}

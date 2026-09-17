@@ -276,8 +276,17 @@ app_include_js = [
     "/assets/thunder_desk/js/item_history.js",
     "/assets/thunder_desk/js/company_switcher.js",
     "/assets/thunder_desk/js/global_company_filter.js",
-    "/assets/thunder_desk/js/global_report_auto_print.js"
+    "/assets/thunder_desk/js/global_report_auto_print.js",
+    "/assets/thunder_desk/js/pwa_init.js"
 ]
+
+web_include_js = [
+    "/assets/thunder_desk/js/pwa_init.js"
+]
+
+# PWA (Progressive Web App) Support
+page_renderer = "thunder_desk.pwa.PWARenderer"
+update_website_context = "thunder_desk.pwa.update_website_context"
 
 app_include_css = [
     # "/assets/thunder_desk/css/windows_style_menu.css",
